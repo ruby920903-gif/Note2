@@ -1,0 +1,4402 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" data-theme="milk-tea">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>囤貨小管家｜效期與庫存提醒</title>
+
+  <!-- 載入圓潤手寫感字體（離線時平滑退回系統無襯線字體） -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* =====================================================================
+       一、四款低飽和度粉嫩主題變數（全介面元件 100% 動態連動）
+       ===================================================================== */
+    :root,
+    [data-theme="milk-tea"] {
+      --bg-page: #FAF6F1;
+      --bg-surface: #FFFFFF;
+      --bg-soft: #F3ECE2;
+      --bg-header: rgba(250, 246, 241, 0.94);
+      --border-line: #E7DCCE;
+      --border-subtle: #EFE7DC;
+
+      --primary: #9C7A5C;
+      --primary-hover: #856549;
+      --primary-soft: #EBDFD1;
+      --primary-ring: rgba(156, 122, 92, 0.22);
+
+      --text-main: #4A3D34;
+      --text-muted: #84756A;
+      --text-light: #AA9C92;
+
+      --icon-fill: #EDE0D4;
+      --icon-fill-alt: #F6E9E0;
+
+      /* 快到期 / 1/5 警戒（奶茶焦糖層次） */
+      --warn-accent: #A87B51;
+      --warn-bg: #FBF5EC;
+      --warn-grad-top: #F7EDE0;
+      --warn-chip: #F3E7D9;
+      --warn-text: #845A34;
+      --warn-border: #E5D1B8;
+
+      /* 正常狀態（柔和淺奶咖） */
+      --normal-bar: #D2BEA7;
+      --normal-bg: #F6F0E8;
+      --normal-text: #7A614A;
+      --normal-border: #E5D7C6;
+
+      /* 已過期（低飽和深可可紅褐） */
+      --expired-accent: #9C5E56;
+      --expired-bg: #F9EFEF;
+      --expired-text: #844942;
+      --expired-border: #E8CEC9;
+
+      --pulse-ring: rgba(168, 123, 81, 0.35);
+      --shadow-card: 0 4px 16px -4px rgba(74, 61, 52, 0.06);
+      --shadow-float: 0 10px 26px -6px rgba(133, 101, 73, 0.24);
+      --shadow-popover: 0 12px 28px -4px rgba(74, 61, 52, 0.14);
+    }
+
+    [data-theme="lavender"] {
+      --bg-page: #F7F5FB;
+      --bg-surface: #FFFFFF;
+      --bg-soft: #EFEAF7;
+      --bg-header: rgba(247, 245, 251, 0.94);
+      --border-line: #E1D8F0;
+      --border-subtle: #ECE6F6;
+
+      --primary: #7E6BA8;
+      --primary-hover: #6B5894;
+      --primary-soft: #E5DCF5;
+      --primary-ring: rgba(126, 107, 168, 0.22);
+
+      --text-main: #3E354D;
+      --text-muted: #786D8A;
+      --text-light: #A298B3;
+
+      --icon-fill: #E5DCF4;
+      --icon-fill-alt: #F0E8F9;
+
+      /* 快到期 / 1/5 警戒（薰衣草深紫） */
+      --warn-accent: #765FA6;
+      --warn-bg: #F5F1FC;
+      --warn-grad-top: #EFE8FA;
+      --warn-chip: #EAE0F8;
+      --warn-text: #594387;
+      --warn-border: #D5C6F0;
+
+      /* 正常狀態（柔和淡紫） */
+      --normal-bar: #C4B6DF;
+      --normal-bg: #F3EFFA;
+      --normal-text: #65558A;
+      --normal-border: #DDD3F0;
+
+      /* 已過期（低飽和梅果紫） */
+      --expired-accent: #87587E;
+      --expired-bg: #F8EFF6;
+      --expired-text: #704368;
+      --expired-border: #E2C8DD;
+
+      --pulse-ring: rgba(118, 95, 166, 0.35);
+      --shadow-card: 0 4px 16px -4px rgba(62, 53, 77, 0.06);
+      --shadow-float: 0 10px 26px -6px rgba(107, 88, 148, 0.24);
+      --shadow-popover: 0 12px 28px -4px rgba(62, 53, 77, 0.14);
+    }
+
+    [data-theme="sky-blue"] {
+      --bg-page: #F3F8FC;
+      --bg-surface: #FFFFFF;
+      --bg-soft: #E8F1F9;
+      --bg-header: rgba(243, 248, 252, 0.94);
+      --border-line: #D4E4F2;
+      --border-subtle: #E3EEF7;
+
+      --primary: #5B7FA3;
+      --primary-hover: #4A6D90;
+      --primary-soft: #D6E7F5;
+      --primary-ring: rgba(91, 127, 163, 0.22);
+
+      --text-main: #334352;
+      --text-muted: #6A7D8F;
+      --text-light: #96A7B8;
+
+      --icon-fill: #DCEBF7;
+      --icon-fill-alt: #EBF4FB;
+
+      /* 快到期 / 1/5 警戒（霧霾深藍） */
+      --warn-accent: #4C76A1;
+      --warn-bg: #EEF5FC;
+      --warn-grad-top: #E4F0FA;
+      --warn-chip: #DFECF8;
+      --warn-text: #355B82;
+      --warn-border: #C0D9F0;
+
+      /* 正常狀態（柔和晴空淺藍） */
+      --normal-bar: #ABC6DF;
+      --normal-bg: #EFF6FC;
+      --normal-text: #4B6A87;
+      --normal-border: #CFE0F0;
+
+      /* 已過期（低飽和靛藍灰） */
+      --expired-accent: #5E6287;
+      --expired-bg: #F1F2F8;
+      --expired-text: #494D70;
+      --expired-border: #D2D5E8;
+
+      --pulse-ring: rgba(76, 118, 161, 0.35);
+      --shadow-card: 0 4px 16px -4px rgba(51, 67, 82, 0.06);
+      --shadow-float: 0 10px 26px -6px rgba(74, 109, 144, 0.24);
+      --shadow-popover: 0 12px 28px -4px rgba(51, 67, 82, 0.14);
+    }
+
+    [data-theme="sakura-pink"] {
+      --bg-page: #FDF5F7;
+      --bg-surface: #FFFFFF;
+      --bg-soft: #F9EBEE;
+      --bg-header: rgba(253, 245, 247, 0.94);
+      --border-line: #EED7DD;
+      --border-subtle: #F5E6EA;
+
+      --primary: #B87287;
+      --primary-hover: #A15E72;
+      --primary-soft: #F5DCE3;
+      --primary-ring: rgba(184, 114, 135, 0.22);
+
+      --text-main: #4F373D;
+      --text-muted: #8A6E75;
+      --text-light: #B39AA0;
+
+      --icon-fill: #F4DFE4;
+      --icon-fill-alt: #FAECEF;
+
+      /* 快到期 / 1/5 警戒（乾燥玫瑰深粉） */
+      --warn-accent: #B5637C;
+      --warn-bg: #FCF0F4;
+      --warn-grad-top: #F9E5EC;
+      --warn-chip: #F6DFE7;
+      --warn-text: #8F455C;
+      --warn-border: #ECC5D2;
+
+      /* 正常狀態（柔和草莓奶粉） */
+      --normal-bar: #E2B8C5;
+      --normal-bg: #FBF1F4;
+      --normal-text: #945B6D;
+      --normal-border: #EDD1DA;
+
+      /* 已過期（低飽和莓果酒紅） */
+      --expired-accent: #994E61;
+      --expired-bg: #F8ECEF;
+      --expired-text: #803B4D;
+      --expired-border: #E5C2CB;
+
+      --pulse-ring: rgba(181, 99, 124, 0.35);
+      --shadow-card: 0 4px 16px -4px rgba(79, 55, 61, 0.06);
+      --shadow-float: 0 10px 26px -6px rgba(161, 94, 114, 0.24);
+      --shadow-popover: 0 12px 28px -4px rgba(79, 55, 61, 0.14);
+    }
+
+    /* =====================================================================
+       二、基礎重設與關鍵捲動規則（絕不鎖定垂直捲動）
+       ===================================================================== */
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+      height: auto;
+      overflow-y: auto;
+      overflow-x: clip;
+      -webkit-overflow-scrolling: touch;
+      touch-action: pan-y;
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      font-family: "Zen Maru Gothic", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, -apple-system, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -webkit-tap-highlight-color: transparent;
+      line-height: 1.5;
+    }
+
+    body {
+      transition: background-color 0.22s ease, color 0.22s ease;
+    }
+
+    button, input, select, textarea {
+      font-family: inherit;
+      color: inherit;
+    }
+
+    button {
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .sketch-svg {
+      display: inline-block;
+      vertical-align: middle;
+      flex-shrink: 0;
+    }
+
+    .no-scrollbar {
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* =====================================================================
+       三、頂部固定導覽列、自訂標題、主題選單與買前快搜
+       ===================================================================== */
+    .app-header {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      background-color: var(--bg-header);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border-line);
+      transition: background-color 0.22s ease, border-color 0.22s ease;
+    }
+
+    .header-inner {
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 12px 16px 12px;
+      position: relative;
+    }
+
+    .header-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .brand-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 14px;
+      background-color: var(--bg-soft);
+      border: 1px solid var(--border-line);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .brand-title-wrap {
+      display: flex;
+      align-items: center;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .brand-title-trigger {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      max-width: 100%;
+      min-height: 36px;
+      padding: 4px 8px;
+      margin-left: -6px;
+      border-radius: 10px;
+      text-align: left;
+      transition: background-color 0.16s ease;
+    }
+
+    .brand-title-trigger:hover {
+      background-color: var(--bg-soft);
+    }
+
+    .brand-title {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.25;
+      color: var(--text-main);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .brand-edit-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-light);
+      flex-shrink: 0;
+      transition: color 0.16s ease;
+    }
+
+    .brand-title-trigger:hover .brand-edit-icon {
+      color: var(--primary);
+    }
+
+    .brand-title-input {
+      width: 100%;
+      max-width: 210px;
+      min-height: 36px;
+      padding: 4px 10px;
+      border-radius: 10px;
+      background-color: var(--bg-surface);
+      border: 1.5px solid var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-ring);
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-main);
+      outline: none;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .icon-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-line);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+      transition: background-color 0.16s ease, transform 0.12s ease, border-color 0.16s ease;
+    }
+
+    .icon-btn:hover {
+      background-color: var(--bg-soft);
+      border-color: var(--primary);
+    }
+
+    .icon-btn:active {
+      transform: scale(0.93);
+    }
+
+    /* 主題快捷浮動選單 */
+    .theme-popover {
+      position: absolute;
+      top: 58px;
+      right: 16px;
+      width: 244px;
+      padding: 12px;
+      border-radius: 18px;
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-line);
+      box-shadow: var(--shadow-popover);
+      z-index: 45;
+      animation: popIn 0.16s ease-out;
+    }
+
+    .theme-popover-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      padding: 0 2px;
+    }
+
+    .theme-popover-title {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .theme-popover-hint {
+      font-size: 11px;
+      color: var(--text-light);
+    }
+
+    .theme-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+
+    .theme-option-btn {
+      min-height: 42px;
+      padding: 8px 10px;
+      border-radius: 12px;
+      border: 1px solid var(--border-line);
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      font-size: 12.5px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      transition: border-color 0.16s ease, background-color 0.16s ease;
+    }
+
+    .theme-option-btn:hover {
+      background-color: var(--bg-soft);
+    }
+
+    .theme-option-btn.is-active {
+      border-color: var(--primary);
+      background-color: var(--bg-soft);
+      box-shadow: 0 0 0 2px var(--primary-ring);
+    }
+
+    .theme-option-left {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .theme-swatch {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 1.5px solid;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .theme-swatch-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    /* 買前快搜 */
+    .search-wrap {
+      margin-top: 10px;
+    }
+
+    .search-box {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 13px;
+      color: var(--text-light);
+      display: inline-flex;
+      align-items: center;
+      pointer-events: none;
+    }
+
+    .search-input {
+      width: 100%;
+      min-height: 42px;
+      padding: 9px 38px 9px 38px;
+      border-radius: 999px;
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-line);
+      font-size: 13.5px;
+      color: var(--text-main);
+      outline: none;
+      transition: border-color 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .search-input::placeholder {
+      color: var(--text-light);
+    }
+
+    .search-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-ring);
+    }
+
+    .search-clear-btn {
+      position: absolute;
+      right: 8px;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .search-clear-btn:hover {
+      background-color: var(--bg-soft);
+      color: var(--text-main);
+    }
+
+    .quick-check-banner {
+      margin-top: 8px;
+      padding: 9px 13px;
+      border-radius: 13px;
+      font-size: 12.5px;
+      line-height: 1.5;
+      border: 1px solid var(--border-line);
+    }
+
+    .quick-check-banner.is-has-stock {
+      background-color: var(--warn-bg);
+      border-color: var(--warn-border);
+      color: var(--warn-text);
+    }
+
+    .quick-check-banner.is-no-stock {
+      background-color: var(--normal-bg);
+      border-color: var(--normal-border);
+      color: var(--normal-text);
+    }
+
+    /* =====================================================================
+       四、主容器與核心內容區塊
+       ===================================================================== */
+    .app-container {
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 14px 16px calc(130px + env(safe-area-inset-bottom, 0px));
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    /* 1. 效期提醒看板 */
+    .alert-board {
+      border-radius: 20px;
+      background-color: var(--bg-surface);
+      border: 1px solid var(--warn-border);
+      box-shadow: var(--shadow-card);
+      overflow: hidden;
+    }
+
+    .alert-board-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 13px 14px;
+      background: linear-gradient(180deg, var(--warn-grad-top) 0%, var(--warn-bg) 100%);
+      border-bottom: 1px solid var(--warn-border);
+    }
+
+    .alert-board-head.is-collapsed {
+      border-bottom: none;
+    }
+
+    .alert-head-trigger {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1;
+      min-width: 0;
+      text-align: left;
+    }
+
+    .alert-hourglass-box {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background-color: var(--warn-chip);
+      border: 1px solid var(--warn-border);
+      color: var(--warn-accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .alert-head-text {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .alert-title-row {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      flex-wrap: wrap;
+    }
+
+    .alert-title {
+      margin: 0;
+      font-size: 14.5px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .alert-count-pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 9px;
+      border-radius: 999px;
+      background-color: var(--warn-accent);
+      color: #FFFFFF;
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .alert-subtitle {
+      margin: 2px 0 0;
+      font-size: 11.5px;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .alert-head-right {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .notif-test-btn {
+      padding: 6px 11px;
+      border-radius: 999px;
+      background-color: var(--bg-surface);
+      border: 1px solid var(--warn-border);
+      color: var(--warn-text);
+      font-size: 11.5px;
+      font-weight: 700;
+      white-space: nowrap;
+      transition: background-color 0.16s ease, transform 0.12s ease;
+    }
+
+    .notif-test-btn:hover {
+      background-color: var(--warn-chip);
+    }
+
+    .notif-test-btn:active {
+      transform: scale(0.95);
+    }
+
+    .chevron-btn {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      color: var(--warn-text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .chevron-icon {
+      transition: transform 0.2s ease;
+    }
+
+    .chevron-icon.is-open {
+      transform: rotate(180deg);
+    }
+
+    .alert-board-body {
+      padding: 12px 14px 14px;
+      background-color: var(--bg-surface);
+    }
+
+    .alert-chips {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .alert-chip {
+      width: 100%;
+      padding: 9px 13px;
+      border-radius: 14px;
+      background-color: var(--warn-bg);
+      border: 1px solid var(--warn-border);
+      color: var(--warn-text);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      text-align: left;
+      transition: background-color 0.15s ease, transform 0.12s ease;
+    }
+
+    .alert-chip:hover {
+      background-color: var(--warn-chip);
+    }
+
+    .alert-chip:active {
+      transform: scale(0.985);
+    }
+
+    .alert-chip.is-expired {
+      background-color: var(--expired-bg);
+      border-color: var(--expired-border);
+      color: var(--expired-text);
+    }
+
+    .alert-chip-left {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      min-width: 0;
+      flex: 1;
+    }
+
+    .alert-chip-name {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .alert-chip-day {
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    /* 2. 儀表板摘要 4 格卡片 */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .stat-card {
+      padding: 11px 10px;
+      border-radius: 16px;
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-line);
+      box-shadow: var(--shadow-card);
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 6px;
+      transition: border-color 0.16s ease, transform 0.12s ease;
+    }
+
+    .stat-card:hover {
+      border-color: var(--primary);
+    }
+
+    .stat-card:active {
+      transform: scale(0.97);
+    }
+
+    .stat-label {
+      margin: 0;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    .stat-label.is-warn {
+      color: var(--warn-text);
+    }
+
+    .stat-label.is-expired {
+      color: var(--expired-text);
+    }
+
+    .stat-value-row {
+      display: flex;
+      align-items: baseline;
+      gap: 3px;
+    }
+
+    .stat-value {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 1.1;
+      color: var(--text-main);
+    }
+
+    .stat-value.is-warn {
+      color: var(--warn-accent);
+    }
+
+    .stat-value.is-expired {
+      color: var(--expired-accent);
+    }
+
+    .stat-sub-tag {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--warn-text);
+      white-space: nowrap;
+    }
+
+    /* 3. 分類篩選、狀態列與排序 */
+    .filter-section {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .category-pills {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      overflow-x: auto;
+      touch-action: pan-x pan-y;
+      padding: 2px 0;
+    }
+
+    .cat-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 13px;
+      border-radius: 999px;
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-line);
+      color: var(--text-main);
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+      flex-shrink: 0;
+      transition: background-color 0.16s ease, border-color 0.16s ease, color 0.16s ease;
+    }
+
+    .cat-pill:hover {
+      background-color: var(--bg-soft);
+    }
+
+    .cat-pill.is-active {
+      background-color: var(--primary);
+      border-color: var(--primary);
+      color: #FFFFFF;
+    }
+
+    .cat-count {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 20px;
+      height: 20px;
+      padding: 0 6px;
+      border-radius: 999px;
+      background-color: var(--bg-soft);
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .cat-pill.is-active .cat-count {
+      background-color: rgba(255, 255, 255, 0.24);
+      color: #FFFFFF;
+    }
+
+    .status-sort-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .status-tabs {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      overflow-x: auto;
+      touch-action: pan-x pan-y;
+      flex: 1;
+      min-width: 0;
+      padding: 2px 0;
+    }
+
+    .status-tab {
+      padding: 6px 11px;
+      border-radius: 10px;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--text-muted);
+      white-space: nowrap;
+      flex-shrink: 0;
+      transition: background-color 0.15s ease, color 0.15s ease;
+    }
+
+    .status-tab:hover {
+      background-color: var(--bg-soft);
+      color: var(--text-main);
+    }
+
+    .status-tab.is-active {
+      background-color: var(--primary-soft);
+      color: var(--text-main);
+      font-weight: 700;
+    }
+
+    .sort-select {
+      min-height: 34px;
+      padding: 5px 10px;
+      border-radius: 12px;
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-line);
+      color: var(--text-main);
+      font-size: 12px;
+      font-weight: 600;
+      outline: none;
+      flex-shrink: 0;
+    }
+
+    .sort-select:focus {
+      border-color: var(--primary);
+    }
+
+    /* 4. 物品卡片清單 */
+    .items-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .item-card {
+      padding: 15px;
+      border-radius: 20px;
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-line);
+      box-shadow: var(--shadow-card);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .item-card.is-expiring {
+      border-color: var(--warn-border);
+    }
+
+    .item-card.is-expired {
+      border-color: var(--expired-border);
+    }
+
+    .item-card.is-empty {
+      opacity: 0.72;
+    }
+
+    .item-card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .item-main-click {
+      display: flex;
+      align-items: flex-start;
+      gap: 11px;
+      flex: 1;
+      min-width: 0;
+      cursor: pointer;
+    }
+
+    .item-thumb {
+      width: 50px;
+      height: 50px;
+      border-radius: 15px;
+      background-color: var(--bg-soft);
+      border: 1px solid var(--border-subtle);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+
+    .item-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .item-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .item-badges {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 5px;
+    }
+
+    .badge-cat {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background-color: var(--bg-soft);
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .badge-status {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 9px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .badge-status.is-safe {
+      background-color: var(--normal-bg);
+      border: 1px solid var(--normal-border);
+      color: var(--normal-text);
+    }
+
+    .badge-status.is-expiring {
+      background-color: var(--warn-bg);
+      border: 1px solid var(--warn-border);
+      color: var(--warn-text);
+    }
+
+    .badge-status.is-expired {
+      background-color: var(--expired-bg);
+      border: 1px solid var(--expired-border);
+      color: var(--expired-text);
+    }
+
+    .badge-status.is-muted {
+      background-color: var(--bg-soft);
+      border: 1px solid var(--border-line);
+      color: var(--text-muted);
+    }
+
+    .item-name {
+      margin: 0;
+      font-size: 15.5px;
+      font-weight: 700;
+      color: var(--text-main);
+      line-height: 1.35;
+      word-break: break-word;
+    }
+
+    .item-note {
+      margin: 4px 0 0;
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.45;
+      word-break: break-word;
+    }
+
+    /* 右側庫存加減控制 */
+    .item-controls {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 7px;
+      flex-shrink: 0;
+    }
+
+    .stepper {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px;
+      border-radius: 14px;
+      background-color: var(--bg-page);
+      border: 1px solid var(--border-line);
+    }
+
+    .stepper-btn {
+      width: 30px;
+      height: 30px;
+      border-radius: 10px;
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
+      font-size: 16px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.14s ease, transform 0.1s ease;
+    }
+
+    .stepper-btn:hover {
+      background-color: var(--bg-soft);
+    }
+
+    .stepper-btn:active {
+      transform: scale(0.92);
+    }
+
+    .stepper-btn.is-plus {
+      background-color: var(--primary);
+      border-color: var(--primary);
+      color: #FFFFFF;
+    }
+
+    .stepper-btn.is-plus:hover {
+      background-color: var(--primary-hover);
+    }
+
+    .stepper-btn.is-disabled {
+      opacity: 0.35;
+      pointer-events: none;
+    }
+
+    .stepper-val {
+      min-width: 34px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      line-height: 1.1;
+    }
+
+    .stepper-num {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .stepper-unit {
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+
+    .item-text-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding-right: 2px;
+    }
+
+    .text-action-btn {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      padding: 2px 4px;
+      border-radius: 6px;
+    }
+
+    .text-action-btn:hover {
+      color: var(--primary);
+      background-color: var(--bg-soft);
+    }
+
+    .text-action-btn.is-delete:hover {
+      color: var(--expired-accent);
+      background-color: var(--expired-bg);
+    }
+
+    /* 效期進度條與 1/5 警戒線 */
+    .progress-section {
+      margin-top: 13px;
+      padding-top: 11px;
+      border-top: 1px dashed var(--border-line);
+    }
+
+    .progress-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 11.5px;
+      color: var(--text-muted);
+      margin-bottom: 7px;
+      flex-wrap: wrap;
+    }
+
+    .progress-track {
+      position: relative;
+      height: 10px;
+      border-radius: 999px;
+      background-color: var(--bg-soft);
+      overflow: visible;
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: 999px;
+      transition: width 0.3s ease;
+    }
+
+    .progress-fill.is-safe {
+      background-color: var(--normal-bar);
+    }
+
+    .progress-fill.is-expiring {
+      background-color: var(--warn-accent);
+    }
+
+    .progress-fill.is-expired {
+      background-color: var(--expired-accent);
+    }
+
+    .progress-fill.is-empty {
+      background-color: var(--border-line);
+    }
+
+    .threshold-mark {
+      position: absolute;
+      left: 20%;
+      top: -3px;
+      bottom: -3px;
+      width: 2.5px;
+      border-radius: 999px;
+      background-color: var(--warn-accent);
+      transform: translateX(-50%);
+    }
+
+    .progress-labels {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 6px;
+      font-size: 10.5px;
+      color: var(--text-light);
+    }
+
+    .progress-label-threshold {
+      position: absolute;
+      left: 20%;
+      transform: translateX(-50%);
+      color: var(--warn-text);
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .no-expiry-bar {
+      margin-top: 12px;
+      padding: 8px 12px;
+      border-radius: 12px;
+      background-color: var(--bg-page);
+      border: 1px dashed var(--border-line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .link-btn {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--primary);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    /* 空狀態卡片 */
+    .empty-state {
+      padding: 36px 22px;
+      border-radius: 22px;
+      background-color: var(--bg-surface);
+      border: 1px dashed var(--border-line);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .empty-icon-wrap {
+      width: 68px;
+      height: 68px;
+      border-radius: 22px;
+      background-color: var(--bg-soft);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .empty-title {
+      margin: 4px 0 0;
+      font-size: 15.5px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .empty-desc {
+      margin: 0 0 6px;
+      font-size: 12.5px;
+      color: var(--text-muted);
+      max-width: 300px;
+      line-height: 1.55;
+    }
+
+    /* =====================================================================
+       五、底部懸浮快捷操作列（3 顆單行清晰按鈕）
+       ===================================================================== */
+    .fab-dock {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 25;
+      pointer-events: none;
+      padding: 12px 14px calc(16px + env(safe-area-inset-bottom, 0px));
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, var(--bg-page) 45%);
+    }
+
+    .fab-inner {
+      max-width: 520px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      pointer-events: auto;
+    }
+
+    .fab-btn {
+      flex: 1;
+      min-width: 0;
+      min-height: 48px;
+      padding: 10px 10px;
+      border-radius: 16px;
+      font-size: 13px;
+      font-weight: 700;
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      box-shadow: var(--shadow-float);
+      transition: transform 0.12s ease, background-color 0.16s ease;
+    }
+
+    .fab-btn:active {
+      transform: scale(0.96);
+    }
+
+    .fab-primary {
+      background-color: var(--primary);
+      color: #FFFFFF;
+    }
+    .fab-primary:hover {
+      background-color: var(--primary-hover);
+    }
+
+    .fab-soft {
+      background-color: var(--primary-soft);
+      border: 1px solid var(--border-line);
+      color: var(--text-main);
+    }
+    .fab-soft:hover {
+      background-color: var(--bg-soft);
+    }
+
+    .fab-outline {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-line);
+      color: var(--text-main);
+    }
+    .fab-outline:hover {
+      background-color: var(--bg-soft);
+    }
+
+    @media (max-width: 380px) {
+      .fab-btn {
+        font-size: 12px;
+        padding: 10px 7px;
+        gap: 4px;
+      }
+    }
+
+    /* =====================================================================
+       六、彈窗、表單元件、即時相機與 Toast
+       ===================================================================== */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100vh;
+      height: 100dvh;
+      z-index: 50;
+      background-color: rgba(45, 38, 34, 0.44);
+      backdrop-filter: blur(3px);
+      -webkit-backdrop-filter: blur(3px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: max(16px, env(safe-area-inset-top)) 14px max(16px, env(safe-area-inset-bottom));
+      animation: fadeIn 0.18s ease-out;
+    }
+
+    .modal-backdrop.is-confirm {
+      align-items: center;
+      z-index: 70;
+    }
+
+    .modal-sheet {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      max-width: 480px;
+      max-height: calc(100vh - 32px);
+      max-height: calc(100dvh - 32px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+      overflow: hidden;
+      background-color: var(--bg-page);
+      border: 1px solid var(--border-line);
+      border-radius: 24px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.22);
+      animation: slideUp 0.2s ease-out;
+    }
+
+    .modal-sheet.is-sm {
+      max-width: 430px;
+    }
+
+    .modal-sheet.is-xs {
+      max-width: 340px;
+      padding: 20px;
+      overflow-y: auto;
+      background-color: var(--bg-surface);
+    }
+
+    .modal-header {
+      flex-shrink: 0;
+      z-index: 5;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 16px 18px 13px;
+      background-color: var(--bg-page);
+      border-bottom: 1px solid var(--border-line);
+    }
+
+    .modal-title {
+      margin: 0;
+      font-size: 16.5px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .modal-sub {
+      margin: 2px 0 0;
+      font-size: 11.5px;
+      color: var(--text-muted);
+    }
+
+    .modal-close-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-line);
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .modal-close-btn:hover {
+      background-color: var(--bg-soft);
+      color: var(--text-main);
+    }
+
+    .modal-body {
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
+      padding: 16px 18px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .form-card {
+      padding: 13px 14px;
+      border-radius: 16px;
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-line);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .form-label-inline {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+
+    .form-required {
+      color: var(--expired-accent);
+    }
+
+    .form-optional {
+      font-weight: 500;
+      color: var(--text-light);
+      font-size: 11px;
+    }
+
+    .form-input, .form-textarea {
+      width: 100%;
+      min-height: 42px;
+      padding: 9px 12px;
+      border-radius: 12px;
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-line);
+      font-size: 13.5px;
+      color: var(--text-main);
+      outline: none;
+      transition: border-color 0.16s ease, box-shadow 0.16s ease;
+    }
+
+    .form-card .form-input {
+      background-color: var(--bg-page);
+    }
+
+    .form-input:focus, .form-textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-ring);
+    }
+
+    .form-textarea {
+      min-height: 70px;
+      resize: none;
+    }
+
+    .btn-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn {
+      min-height: 44px;
+      padding: 10px 14px;
+      border-radius: 14px;
+      font-size: 13px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      white-space: nowrap;
+      transition: transform 0.12s ease, background-color 0.16s ease;
+    }
+
+    .btn:active {
+      transform: scale(0.96);
+    }
+
+    .btn-flex { flex: 1; }
+    .btn-flex-lg { flex: 1.5; }
+
+    .btn-primary {
+      background-color: var(--primary);
+      color: #FFFFFF;
+    }
+    .btn-primary:hover { background-color: var(--primary-hover); }
+
+    .btn-soft {
+      background-color: var(--bg-soft);
+      color: var(--text-main);
+    }
+    .btn-soft:hover { background-color: var(--primary-soft); }
+
+    .btn-surface {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-line);
+      color: var(--text-muted);
+    }
+    .btn-surface:hover {
+      background-color: var(--bg-soft);
+      color: var(--text-main);
+    }
+
+    .btn-danger {
+      background-color: var(--expired-accent);
+      color: #FFFFFF;
+    }
+
+    .btn-danger-soft {
+      background-color: var(--expired-bg);
+      color: var(--expired-text);
+      border: 1px solid var(--expired-border);
+    }
+
+    .btn-normal-soft {
+      background-color: var(--normal-bg);
+      color: var(--normal-text);
+      border: 1px solid var(--normal-border);
+    }
+
+    /* AI 辨識卡片 */
+    .ai-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .ai-title {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--text-main);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .ai-pill {
+      padding: 2px 8px;
+      border-radius: 999px;
+      background-color: var(--bg-soft);
+      color: var(--primary);
+      font-size: 10.5px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .photo-preview-box {
+      position: relative;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid var(--border-line);
+      background-color: var(--bg-soft);
+    }
+
+    .photo-preview-box img {
+      width: 100%;
+      height: 164px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .photo-remove-btn {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background-color: rgba(45, 38, 34, 0.72);
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .scan-overlay {
+      position: absolute;
+      inset: 0;
+      background-color: rgba(45, 38, 34, 0.65);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #FFFFFF;
+      font-size: 12px;
+      font-weight: 600;
+      gap: 8px;
+    }
+
+    .scan-beam {
+      position: absolute;
+      left: 14px;
+      right: 14px;
+      height: 2px;
+      background-color: var(--warn-accent);
+      box-shadow: 0 0 10px var(--warn-accent);
+      animation: scanBeam 1.6s ease-in-out infinite;
+    }
+
+    .spinner {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      border: 2.5px solid rgba(255, 255, 255, 0.3);
+      border-top-color: #FFFFFF;
+      animation: spin 0.8s linear infinite;
+    }
+
+    .status-banner {
+      padding: 10px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 1.5;
+      border: 1px solid var(--border-line);
+      background-color: var(--bg-soft);
+      color: var(--text-muted);
+    }
+
+    .status-banner.is-safe {
+      background-color: var(--normal-bg);
+      color: var(--normal-text);
+      border-color: var(--normal-border);
+    }
+
+    .status-banner.is-warn {
+      background-color: var(--warn-bg);
+      color: var(--warn-text);
+      border-color: var(--warn-border);
+    }
+
+    .status-banner.is-expired {
+      background-color: var(--expired-bg);
+      color: var(--expired-text);
+      border-color: var(--expired-border);
+    }
+
+    .cat-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .cat-choice-btn {
+      min-height: 42px;
+      padding: 8px 6px;
+      border-radius: 12px;
+      border: 1px solid var(--border-line);
+      background-color: var(--bg-surface);
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      transition: all 0.15s ease;
+    }
+
+    .cat-choice-btn.is-active {
+      background-color: var(--primary);
+      border-color: var(--primary);
+      color: #FFFFFF;
+    }
+
+    .qty-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .qty-stepper {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .qty-num-input {
+      width: 56px;
+      min-height: 42px;
+      text-align: center;
+      border-radius: 12px;
+      background-color: var(--bg-page);
+      border: 1px solid var(--border-line);
+      font-size: 14px;
+      font-weight: 700;
+      outline: none;
+    }
+
+    .unit-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding-top: 10px;
+      border-top: 1px solid var(--bg-soft);
+    }
+
+    .unit-chips {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .mini-chip {
+      padding: 5px 9px;
+      border-radius: 9px;
+      background-color: var(--bg-soft);
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .mini-chip:hover {
+      background-color: var(--primary-soft);
+      color: var(--text-main);
+    }
+
+    .unit-input {
+      width: 50px;
+      min-height: 32px;
+      text-align: center;
+      border-radius: 9px;
+      background-color: var(--bg-page);
+      border: 1px solid var(--border-line);
+      font-size: 12px;
+      font-weight: 700;
+      outline: none;
+    }
+
+    .date-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    @media (min-width: 460px) {
+      .date-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    .quick-shelf-row {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    /* 設定項目列 */
+    .setting-row-btn {
+      width: 100%;
+      min-height: 52px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .setting-row-btn:hover {
+      border-color: var(--primary);
+    }
+
+    .setting-row-title {
+      margin: 0;
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .setting-row-sub {
+      margin: 2px 0 0;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .setting-tag {
+      padding: 4px 10px;
+      border-radius: 10px;
+      font-size: 11.5px;
+      font-weight: 700;
+      white-space: nowrap;
+      background-color: var(--bg-soft);
+      color: var(--primary);
+    }
+
+    .setting-tag.is-warn {
+      background-color: var(--warn-bg);
+      color: var(--warn-text);
+      border: 1px solid var(--warn-border);
+    }
+
+    .settings-grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    /* 即時相機觀景窗 */
+    .camera-modal {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100vh;
+      height: 100dvh;
+      z-index: 65;
+      background-color: #000000;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .camera-topbar {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: max(14px, env(safe-area-inset-top)) 16px 14px;
+      background: linear-gradient(180deg, rgba(0, 0, 0, 0.8) 0%, transparent 100%);
+    }
+
+    .camera-pill-btn {
+      min-height: 40px;
+      padding: 0 14px;
+      border-radius: 999px;
+      background-color: rgba(255, 255, 255, 0.16);
+      color: #FFFFFF;
+      font-size: 12px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .camera-stage {
+      position: relative;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .camera-video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .camera-guide-wrap {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 0 24px;
+    }
+
+    .camera-frame {
+      width: 100%;
+      max-width: 340px;
+      aspect-ratio: 4 / 3;
+      border-radius: 24px;
+      border: 2px solid rgba(255, 255, 255, 0.78);
+      box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.42);
+    }
+
+    .camera-hint {
+      margin-top: 18px;
+      padding: 8px 16px;
+      border-radius: 999px;
+      background-color: rgba(0, 0, 0, 0.62);
+      color: #FFFFFF;
+      font-size: 12px;
+      text-align: center;
+    }
+
+    .camera-bottom {
+      position: relative;
+      z-index: 2;
+      padding: 22px 0 calc(28px + env(safe-area-inset-bottom, 0px));
+      background: linear-gradient(0deg, rgba(0, 0, 0, 0.85) 0%, transparent 100%);
+      display: flex;
+      justify-content: center;
+    }
+
+    .shutter-btn {
+      width: 74px;
+      height: 74px;
+      border-radius: 50%;
+      border: 4px solid rgba(255, 255, 255, 0.92);
+      padding: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .shutter-btn:active { transform: scale(0.92); }
+
+    .shutter-inner {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background-color: #FFFFFF;
+    }
+
+    /* Toast 提示 */
+    .toast-container {
+      position: fixed;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 80;
+      width: 92%;
+      max-width: 360px;
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .toast-item {
+      padding: 11px 16px;
+      border-radius: 16px;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: #FFFFFF;
+      text-align: center;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.16);
+      background-color: var(--text-main);
+      animation: slideUp 0.2s ease-out forwards;
+    }
+
+    .toast-item.is-success { background-color: var(--primary); }
+    .toast-item.is-error { background-color: var(--expired-accent); }
+
+    /* =====================================================================
+       七、動畫定義
+       ===================================================================== */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @keyframes slideUp {
+      from { transform: translateY(14px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    @keyframes popIn {
+      from { transform: scale(0.95) translateY(-4px); opacity: 0; }
+      to { transform: scale(1) translateY(0); opacity: 1; }
+    }
+    @keyframes scanBeam {
+      0% { top: 12%; opacity: 0.3; }
+      50% { top: 86%; opacity: 0.95; }
+      100% { top: 12%; opacity: 0.3; }
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    @keyframes cardPulse {
+      0%, 100% { box-shadow: var(--shadow-card); }
+      50% { box-shadow: 0 0 0 6px var(--pulse-ring); }
+    }
+
+    .card-highlight {
+      animation: cardPulse 0.9s ease-in-out 2;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===================================================================
+       頂部固定導覽列、自訂名稱、主題選單與買前快搜
+       =================================================================== -->
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="header-top">
+        <div class="brand">
+          <div class="brand-icon" aria-hidden="true">
+            <!-- 手繪收納紙箱 Logo -->
+            <svg class="sketch-svg" width="24" height="24" viewBox="0 0 28 28" fill="none">
+              <path d="M5.5 11.5L14 6.5L22.5 11.5V20.5C22.5 21.3 21.9 22 21.1 22.3L14 24.8L6.9 22.3C6.1 22 5.5 21.3 5.5 20.5V11.5Z" fill="var(--icon-fill)" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M5.8 11.6L14 15.8L22.2 11.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M14 15.8V24.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+              <path d="M10.2 8.7L18.2 13.3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-dasharray="2 2"/>
+            </svg>
+          </div>
+          <div class="brand-title-wrap">
+            <button type="button" id="brandTitleTrigger" class="brand-title-trigger" data-action="start-edit-title" title="點擊自訂名稱" aria-label="點擊自訂應用程式名稱">
+              <h1 id="brandTitleText" class="brand-title">囤貨小管家</h1>
+              <span class="brand-edit-icon" aria-hidden="true">
+                <svg class="sketch-svg" width="14" height="14" viewBox="0 0 24 24" fill="none">
+                  <path d="M15.8 5.2L18.8 8.2L9.2 17.8L5.2 18.8L6.2 14.8L15.8 5.2Z" fill="var(--icon-fill)" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M13.8 7.2L16.8 10.2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+              </span>
+            </button>
+            <input id="brandTitleInput" type="text" maxlength="24" class="brand-title-input hidden" placeholder="囤貨小管家" aria-label="輸入自訂應用程式名稱">
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <!-- 手繪調色盤 -->
+          <button type="button" class="icon-btn" id="btnHeaderTheme" data-action="toggle-theme-popover" title="更換主題色彩" aria-label="更換主題色彩" aria-expanded="false">
+            <svg class="sketch-svg" width="19" height="19" viewBox="0 0 24 24" fill="none">
+              <path d="M12 3.2C7.1 3.2 3.2 7 3.2 11.9C3.2 16.5 6.8 20.4 11.4 20.4C12.7 20.4 13.6 19.6 13.6 18.5C13.6 18 13.4 17.5 13.1 17.1C12.8 16.7 12.7 16.2 13 15.7C13.3 15.2 13.9 15 14.5 15H16.3C19 15 20.8 13.1 20.8 10.6C20.8 6.4 16.9 3.2 12 3.2Z" fill="var(--icon-fill)" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="8" cy="10.2" r="1.25" fill="#9C7A5C"/>
+              <circle cx="11.2" cy="7.4" r="1.25" fill="#7E6BA8"/>
+              <circle cx="15.3" cy="8.2" r="1.25" fill="#5B7FA3"/>
+              <circle cx="16.8" cy="11.6" r="1.25" fill="#B87287"/>
+            </svg>
+          </button>
+
+          <!-- 手繪鈴鐺 -->
+          <button type="button" class="icon-btn" data-action="test-notif" title="測試效期通知" aria-label="測試效期通知">
+            <svg class="sketch-svg" width="19" height="19" viewBox="0 0 24 24" fill="none">
+              <path d="M6.5 16.2C7.3 15.1 7.6 13.6 7.6 11.6C7.6 8.6 9.5 6.3 12 6.3C14.5 6.3 16.4 8.6 16.4 11.6C16.4 13.6 16.7 15.1 17.5 16.2C17.9 16.7 17.5 17.5 16.8 17.5H7.2C6.5 17.5 6.1 16.7 6.5 16.2Z" fill="var(--icon-fill)" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M12 4.2V6" stroke="currentColor" stroke-width="1.65" stroke-linecap="round"/>
+              <path d="M10 17.8C10.3 19.1 11.1 19.8 12 19.8C12.9 19.8 13.7 19.1 14 17.8" stroke="currentColor" stroke-width="1.65" stroke-linecap="round"/>
+            </svg>
+          </button>
+
+          <!-- 手繪設定滑桿 -->
+          <button type="button" class="icon-btn" data-action="open-settings" title="設定與備份" aria-label="設定與備份">
+            <svg class="sketch-svg" width="19" height="19" viewBox="0 0 24 24" fill="none">
+              <path d="M4.5 7.5H9.5M14.5 7.5H19.5" stroke="currentColor" stroke-width="1.65" stroke-linecap="round"/>
+              <circle cx="12" cy="7.5" r="2.2" fill="var(--icon-fill)" stroke="currentColor" stroke-width="1.65"/>
+              <path d="M4.5 16.5H13.5M18.5 16.5H19.5" stroke="currentColor" stroke-width="1.65" stroke-linecap="round"/>
+              <circle cx="16" cy="16.5" r="2.2" fill="var(--icon-fill)" stroke="currentColor" stroke-width="1.65"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- 頂部四色主題快捷選單 -->
+      <div id="themePopover" class="theme-popover hidden">
+        <div class="theme-popover-head">
+          <span class="theme-popover-title">選擇手帳主題色</span>
+          <span class="theme-popover-hint">淡雅低飽和</span>
+        </div>
+        <div id="headerThemeOptions" class="theme-grid"></div>
+      </div>
+
+      <!-- 買前快搜 -->
+      <div class="search-wrap">
+        <div class="search-box">
+          <span class="search-icon" aria-hidden="true">
+            <svg class="sketch-svg" width="17" height="17" viewBox="0 0 24 24" fill="none">
+              <circle cx="10.8" cy="10.8" r="6.4" fill="var(--icon-fill)" stroke="currentColor" stroke-width="1.8"/>
+              <path d="M15.8 15.8L20.2 20.2" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <input id="searchInput" type="text" class="search-input" autocomplete="off" placeholder="買前快搜：輸入品名或備註，立刻確認家裡還有沒有...">
+          <button id="btnClearSearch" type="button" class="search-clear-btn hidden" data-action="clear-search" aria-label="清除搜尋">
+            <svg class="sketch-svg" width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path d="M6.5 6.5L17.5 17.5M17.5 6.5L6.5 17.5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+        <div id="quickCheckBanner" class="quick-check-banner hidden"></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===================================================================
+       主要內容區
+       =================================================================== -->
+  <main class="app-container">
+
+    <!-- 1. 效期提醒看板（剩餘 1/5 快到期 & 已過期） -->
+    <section id="alertBoardSection" class="hidden">
+      <div class="alert-board">
+        <div id="alertBoardHead" class="alert-board-head">
+          <button type="button" class="alert-head-trigger" data-action="toggle-alert-board">
+            <div class="alert-hourglass-box" aria-hidden="true">
+              <svg class="sketch-svg" width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path d="M6.5 4.2H17.5M6.5 19.8H17.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+                <path d="M8 4.4V7.2C8 9.2 10.6 10.8 12 12C13.4 10.8 16 9.2 16 7.2V4.4" fill="var(--warn-chip)" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M8 19.6V16.8C8 14.8 10.6 13.2 12 12C13.4 13.2 16 14.8 16 16.8V19.6" fill="var(--warn-chip)" fill-opacity="0.75" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="alert-head-text">
+              <div class="alert-title-row">
+                <h2 class="alert-title">效期提醒看板</h2>
+                <span id="alertCountBadge" class="alert-count-pill">0 項</span>
+              </div>
+              <p class="alert-subtitle">點擊品項可快速定位檢視（已達 1/5 門檻或已過期）</p>
+            </div>
+          </button>
+
+          <div class="alert-head-right">
+            <button type="button" class="notif-test-btn" data-action="test-notif">通知測試</button>
+            <button type="button" class="chevron-btn" data-action="toggle-alert-board" aria-label="展開或收合提醒看板">
+              <svg id="alertChevron" class="chevron-icon is-open" width="18" height="18" viewBox="0 0 24 24" fill="none">
+                <path d="M7 10L12 15L17 10" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div id="alertBoardBody" class="alert-board-body">
+          <div id="alertChipsContainer" class="alert-chips"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. 儀表板摘要卡片（4 格） -->
+    <section class="stats-grid">
+      <button type="button" class="stat-card" data-action="quick-status" data-status="all">
+        <p class="stat-label">總庫存件數</p>
+        <div class="stat-value-row">
+          <p id="statTotalQty" class="stat-value">0</p>
+        </div>
+      </button>
+
+      <button type="button" class="stat-card" data-action="quick-status" data-status="expiring">
+        <p class="stat-label is-warn">快到期</p>
+        <div class="stat-value-row">
+          <p id="statExpiring" class="stat-value is-warn">0</p>
+          <span class="stat-sub-tag">1/5內</span>
+        </div>
+      </button>
+
+      <button type="button" class="stat-card" data-action="quick-status" data-status="expired">
+        <p class="stat-label is-expired">已過期</p>
+        <div class="stat-value-row">
+          <p id="statExpired" class="stat-value is-expired">0</p>
+        </div>
+      </button>
+
+      <button type="button" class="stat-card" data-action="quick-status" data-status="all">
+        <p class="stat-label">品項總數</p>
+        <div class="stat-value-row">
+          <p id="statTotalItems" class="stat-value">0</p>
+        </div>
+      </button>
+    </section>
+
+    <!-- 3. 分類篩選、狀態頁籤與排序 -->
+    <section class="filter-section">
+      <div id="categoryTabs" class="category-pills no-scrollbar"></div>
+
+      <div class="status-sort-row">
+        <div id="statusTabs" class="status-tabs no-scrollbar"></div>
+        <select id="sortSelect" class="sort-select" aria-label="排序方式">
+          <option value="expiry_asc">到期日近到遠</option>
+          <option value="ratio_asc">剩餘效期比例</option>
+          <option value="qty_asc">庫存數量少到多</option>
+          <option value="newest">最近新增</option>
+        </select>
+      </div>
+    </section>
+
+    <!-- 4. 物品卡片清單 -->
+    <section id="itemsContainer" class="items-list"></section>
+
+    <!-- 空狀態顯示（手繪收納小提籃） -->
+    <section id="emptyState" class="empty-state hidden">
+      <div class="empty-icon-wrap" aria-hidden="true">
+        <svg class="sketch-svg" width="44" height="44" viewBox="0 0 48 48" fill="none">
+          <path d="M12 24H36L33.5 36.5C33.2 38 31.9 39 30.4 39H17.6C16.1 39 14.8 38 14.5 36.5L12 24Z" fill="var(--icon-fill)" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M9.5 24H38.5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
+          <path d="M17 24C17 17.5 20 13 24 13C28 13 31 17.5 31 24" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          <path d="M18.5 29V34M24 29V34M29.5 29V34" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.65"/>
+          <path d="M35 13.5C36.4 13.5 37.5 12.4 37.5 11C37.5 12.4 38.6 13.5 40 13.5C38.6 13.5 37.5 14.6 37.5 16C37.5 14.6 36.4 13.5 35 13.5Z" fill="var(--icon-fill-alt)" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <h3 class="empty-title">目前沒有符合條件的物品</h3>
+      <p class="empty-desc">點擊下方按鈕進行拍照 AI 辨識、相簿選取或手動新增，輕鬆掌握每一項囤貨的效期與庫存。</p>
+      <button type="button" class="btn btn-primary" data-action="open-add-modal">
+        <svg class="sketch-svg" width="16" height="16" viewBox="0 0 24 24" fill="none">
+          <path d="M12 5.5V18.5M5.5 12H18.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <span>新增物品</span>
+      </button>
+    </section>
+
+  </main>
+
+  <!-- ===================================================================
+       底部懸浮快捷操作列（拍攝照片 / 相簿選取 / 手動新增）
+       =================================================================== -->
+  <div class="fab-dock">
+    <div class="fab-inner">
+      <button id="btnFabCamera" type="button" class="fab-btn fab-primary" data-action="fab-camera">
+        <svg class="sketch-svg" width="17" height="17" viewBox="0 0 24 24" fill="none">
+          <path d="M4.5 9.2C4.5 8 5.4 7.1 6.6 7.1H8.4L9.7 5.2C10 4.8 10.5 4.6 11 4.6H13C13.5 4.6 14 4.8 14.3 5.2L15.6 7.1H17.4C18.6 7.1 19.5 8 19.5 9.2V16.8C19.5 18 18.6 18.9 17.4 18.9H6.6C5.4 18.9 4.5 18 4.5 16.8V9.2Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="12" cy="12.8" r="3" stroke="currentColor" stroke-width="1.65"/>
+          <circle cx="16.5" cy="9.8" r="0.8" fill="currentColor"/>
+        </svg>
+        <span>拍攝照片</span>
+      </button>
+
+      <button id="btnFabAlbum" type="button" class="fab-btn fab-soft" data-action="fab-album">
+        <svg class="sketch-svg" width="17" height="17" viewBox="0 0 24 24" fill="none">
+          <rect x="4.2" y="5" width="15.6" height="14" rx="3" fill="var(--icon-fill)" stroke="currentColor" stroke-width="1.65"/>
+          <path d="M5.5 16L9.8 11.8C10.4 11.2 11.3 11.2 11.9 11.8L14.5 14.4L16.3 12.7C16.8 12.2 17.6 12.2 18.1 12.7L19.4 14" stroke="currentColor" stroke-width="1.55" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="15.2" cy="9" r="1.3" fill="currentColor" opacity="0.65"/>
+        </svg>
+        <span>相簿選取</span>
+      </button>
+
+      <button id="btnFabManual" type="button" class="fab-btn fab-outline" data-action="open-add-modal">
+        <svg class="sketch-svg" width="16" height="16" viewBox="0 0 24 24" fill="none">
+          <path d="M15.8 5.2L18.8 8.2L9.2 17.8L5.2 18.8L6.2 14.8L15.8 5.2Z" fill="var(--icon-fill)" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M13.8 7.2L16.8 10.2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <span>手動新增</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ===================================================================
+       新增 / 編輯物品彈窗（含 AI 辨識與 1/5 即時試算）
+       =================================================================== -->
+  <div id="itemModal" class="modal-backdrop hidden" data-action="backdrop-close-item">
+    <div class="modal-sheet">
+      <div class="modal-header">
+        <div>
+          <h2 id="itemModalTitle" class="modal-title">新增囤貨物品</h2>
+          <p class="modal-sub">可拍照或從相簿選圖 AI 辨識，或直接手動輸入</p>
+        </div>
+        <button type="button" class="modal-close-btn" data-action="close-item-modal" aria-label="關閉視窗">
+          <svg class="sketch-svg" width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <path d="M6.5 6.5L17.5 17.5M17.5 6.5L6.5 17.5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <form id="itemForm" class="modal-body">
+        <input type="hidden" id="itemId">
+
+        <!-- AI 拍照與相簿辨識區 -->
+        <div class="form-card">
+          <div class="ai-header">
+            <span class="ai-title">
+              <svg class="sketch-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" style="color: var(--primary);">
+                <path d="M12 3.5C12.7 8 16 11.3 20.5 12C16 12.7 12.7 16 12 20.5C11.3 16 8 12.7 3.5 12C8 11.3 11.3 8 12 3.5Z" fill="var(--icon-fill)" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+              </svg>
+              <span>AI 智慧辨識品名與效期</span>
+            </span>
+            <span class="ai-pill">拍到效期才會帶入</span>
+          </div>
+
+          <!-- 純粹相簿選取 input（絕不加 capture 屬性） -->
+          <input id="albumFileInput" type="file" accept="image/*" class="hidden">
+
+          <div class="btn-row">
+            <button id="btnModalCamera" type="button" class="btn btn-primary btn-flex" data-action="modal-camera">
+              <svg class="sketch-svg" width="16" height="16" viewBox="0 0 24 24" fill="none">
+                <path d="M4.5 9.2C4.5 8 5.4 7.1 6.6 7.1H8.4L9.7 5.2C10 4.8 10.5 4.6 11 4.6H13C13.5 4.6 14 4.8 14.3 5.2L15.6 7.1H17.4C18.6 7.1 19.5 8 19.5 9.2V16.8C19.5 18 18.6 18.9 17.4 18.9H6.6C5.4 18.9 4.5 18 4.5 16.8V9.2Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="12" cy="12.8" r="2.9" stroke="currentColor" stroke-width="1.65"/>
+              </svg>
+              <span>拍攝照片</span>
+            </button>
+            <button id="btnModalAlbum" type="button" class="btn btn-soft btn-flex" data-action="modal-album">
+              <svg class="sketch-svg" width="16" height="16" viewBox="0 0 24 24" fill="none">
+                <rect x="4.2" y="5" width="15.6" height="14" rx="3" fill="var(--icon-fill)" stroke="currentColor" stroke-width="1.65"/>
+                <path d="M5.5 16L9.8 11.8C10.4 11.2 11.3 11.2 11.9 11.8L14.5 14.4L16.3 12.7C16.8 12.2 17.6 12.2 18.1 12.7L19.4 14" stroke="currentColor" stroke-width="1.55" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span>相簿選取</span>
+            </button>
+          </div>
+
+          <div id="photoPreviewBox" class="photo-preview-box hidden">
+            <img id="photoPreviewImg" src="" alt="商品預覽照片">
+            <button type="button" class="photo-remove-btn" data-action="remove-photo" aria-label="移除照片">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                <path d="M6.5 6.5L17.5 17.5M17.5 6.5L6.5 17.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </button>
+            <div id="scanOverlay" class="scan-overlay hidden">
+              <div class="scan-beam"></div>
+              <div class="spinner"></div>
+              <span>AI 正在辨識品名與有效期限...</span>
+            </div>
+          </div>
+
+          <div id="scanStatusBanner" class="status-banner hidden"></div>
+        </div>
+
+        <!-- 物品名稱 -->
+        <div>
+          <label for="itemName" class="form-label">物品名稱 <span class="form-required">*</span></label>
+          <input id="itemName" type="text" class="form-input" required placeholder="例如：玻尿酸保濕精華液、胺基酸洗面乳">
+        </div>
+
+        <!-- 物品分類 -->
+        <div>
+          <label class="form-label">物品分類</label>
+          <input type="hidden" id="itemCategory" value="保養品">
+          <div id="categorySelector" class="cat-grid"></div>
+        </div>
+
+        <!-- 目前庫存與單位 -->
+        <div class="form-card">
+          <div class="qty-row">
+            <div>
+              <label for="itemQty" class="form-label" style="margin-bottom: 2px;">目前庫存數量</label>
+              <span style="font-size: 11px; color: var(--text-muted);">隨時記錄存量，避免重複購買</span>
+            </div>
+            <div class="qty-stepper">
+              <button type="button" class="btn btn-soft" style="width: 42px; padding: 0;" data-action="form-qty-minus" aria-label="減少數量">−</button>
+              <input id="itemQty" type="number" min="0" max="999" value="1" class="qty-num-input">
+              <button type="button" class="btn btn-primary" style="width: 42px; padding: 0;" data-action="form-qty-plus" aria-label="增加數量">+</button>
+            </div>
+          </div>
+
+          <div class="unit-row">
+            <label for="itemUnit" style="font-size: 12px; font-weight: 600; color: var(--text-muted);">計量單位</label>
+            <div class="unit-chips">
+              <button type="button" class="mini-chip" data-action="pick-unit" data-unit="瓶">瓶</button>
+              <button type="button" class="mini-chip" data-action="pick-unit" data-unit="支">支</button>
+              <button type="button" class="mini-chip" data-action="pick-unit" data-unit="盒">盒</button>
+              <button type="button" class="mini-chip" data-action="pick-unit" data-unit="包">包</button>
+              <button type="button" class="mini-chip" data-action="pick-unit" data-unit="個">個</button>
+              <input id="itemUnit" type="text" maxlength="6" value="個" class="unit-input">
+            </div>
+          </div>
+        </div>
+
+        <!-- 起始日與有效期限 -->
+        <div class="form-card">
+          <div class="date-grid">
+            <div>
+              <label for="itemStartDate" class="form-label">購買／起始日期</label>
+              <input id="itemStartDate" type="date" class="form-input" required>
+            </div>
+            <div>
+              <div class="form-label-inline">
+                <label for="itemExpiryDate" class="form-label" style="margin: 0;">有效期限 <span class="form-optional">(可選填)</span></label>
+                <button type="button" class="link-btn" style="color: var(--text-muted); font-weight: 500;" data-action="clear-expiry">清除日期</button>
+              </div>
+              <input id="itemExpiryDate" type="date" class="form-input">
+            </div>
+          </div>
+
+          <div class="quick-shelf-row">
+            <span style="font-size: 11px; color: var(--text-muted);">快設效期：</span>
+            <button type="button" class="mini-chip" data-action="add-months" data-months="3">+3個月</button>
+            <button type="button" class="mini-chip" data-action="add-months" data-months="6">+6個月</button>
+            <button type="button" class="mini-chip" data-action="add-months" data-months="12">+1年</button>
+            <button type="button" class="mini-chip" data-action="add-months" data-months="24">+2年</button>
+            <button type="button" class="mini-chip" data-action="add-months" data-months="36">+3年</button>
+          </div>
+
+          <div id="formExpiryPreview" class="status-banner">尚未設定有效期限，之後隨時可補拍或補填。</div>
+        </div>
+
+        <!-- 備註 -->
+        <div>
+          <label for="itemNote" class="form-label">備註 <span class="form-optional">(收納位置、已開封日期等)</span></label>
+          <textarea id="itemNote" class="form-textarea" placeholder="例如：浴室鏡櫃第二層、已開封使用中"></textarea>
+        </div>
+
+        <!-- 底部儲存列 -->
+        <div class="btn-row" style="padding-top: 4px;">
+          <button id="btnDeleteInModal" type="button" class="btn btn-danger-soft hidden" data-action="delete-in-modal">刪除</button>
+          <button type="button" class="btn btn-surface btn-flex" data-action="close-item-modal">取消</button>
+          <button type="submit" class="btn btn-primary btn-flex-lg">儲存物品</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===================================================================
+       網頁內即時相機觀景窗（getUserMedia）
+       =================================================================== -->
+  <div id="cameraModal" class="camera-modal hidden">
+    <div class="camera-topbar">
+      <button type="button" class="camera-pill-btn" data-action="close-camera">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+          <path d="M6.5 6.5L17.5 17.5M17.5 6.5L6.5 17.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <span>關閉</span>
+      </button>
+      <span style="font-size: 12.5px; color: rgba(255,255,255,0.92); font-weight: 600;">即時拍攝辨識</span>
+      <button type="button" class="camera-pill-btn" data-action="switch-camera">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+          <path d="M4.5 9.5C5.6 6.5 8.5 4.5 12 4.5C15.8 4.5 18.9 7.1 19.6 10.6M19.5 14.5C18.4 17.5 15.5 19.5 12 19.5C8.2 19.5 5.1 16.9 4.4 13.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          <path d="M17.2 10.6H20V7.8M6.8 13.4H4V16.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>翻轉鏡頭</span>
+      </button>
+    </div>
+
+    <div class="camera-stage">
+      <video id="liveCameraVideo" class="camera-video" playsinline autoplay muted></video>
+      <div class="camera-guide-wrap">
+        <div class="camera-frame"></div>
+        <p class="camera-hint">請將物品與有效期限置於框內，清楚拍攝辨識更準確</p>
+      </div>
+    </div>
+
+    <div class="camera-bottom">
+      <button type="button" class="shutter-btn" data-action="capture-shutter" aria-label="按下快門拍照">
+        <span class="shutter-inner"></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ===================================================================
+       設定與備份彈窗
+       =================================================================== -->
+  <div id="settingsModal" class="modal-backdrop hidden" data-action="backdrop-close-settings">
+    <div class="modal-sheet is-sm">
+      <div class="modal-header">
+        <div>
+          <h2 class="modal-title">設定與主題管理</h2>
+          <p class="modal-sub">自訂名稱、切換主題色彩與備份還原清單</p>
+        </div>
+        <button type="button" class="modal-close-btn" data-action="close-settings" aria-label="關閉設定視窗">
+          <svg class="sketch-svg" width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <path d="M6.5 6.5L17.5 17.5M17.5 6.5L6.5 17.5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <!-- 自訂應用程式名稱 -->
+        <div class="form-card">
+          <div class="ai-header">
+            <span class="setting-row-title">應用程式名稱</span>
+            <span style="font-size: 11px; color: var(--text-light);">留空將恢復預設名稱</span>
+          </div>
+          <div class="btn-row">
+            <input id="settingsAppNameInput" type="text" maxlength="24" class="form-input" style="flex: 1; min-width: 0;" placeholder="例如：我的美妝櫃、小美的囤貨日記">
+            <button type="button" class="btn btn-primary" data-action="save-settings-name">儲存名稱</button>
+          </div>
+        </div>
+
+        <!-- 四色主題切換 -->
+        <div class="form-card">
+          <div class="ai-header">
+            <span class="setting-row-title">更換主題色彩</span>
+            <span style="font-size: 11px; color: var(--text-light);">自動儲存個人偏好</span>
+          </div>
+          <div id="settingsThemeOptions" class="theme-grid"></div>
+        </div>
+
+        <!-- 瀏覽器通知測試 -->
+        <button type="button" class="setting-row-btn" data-action="test-notif">
+          <div>
+            <p class="setting-row-title">瀏覽器通知測試</p>
+            <p class="setting-row-sub">立即測試發送快到期／已過期提醒通知</p>
+          </div>
+          <span class="setting-tag is-warn">測試</span>
+        </button>
+
+        <!-- JSON 匯出與複製 -->
+        <div class="settings-grid-2">
+          <button type="button" class="btn btn-surface" style="color: var(--text-main);" data-action="export-json">下載 JSON 備份</button>
+          <button type="button" class="btn btn-surface" style="color: var(--text-main);" data-action="copy-json">複製 JSON 內容</button>
+        </div>
+
+        <!-- JSON 匯入 -->
+        <label class="setting-row-btn">
+          <div>
+            <p class="setting-row-title">匯入 JSON 備份檔</p>
+            <p class="setting-row-sub">選擇先前下載的備份檔還原清單</p>
+          </div>
+          <span class="setting-tag">選擇檔案</span>
+          <input id="importJsonInput" type="file" accept="application/json,.json" class="hidden">
+        </label>
+
+        <!-- 示範資料與清空 -->
+        <div class="settings-grid-2" style="padding-top: 8px; border-top: 1px solid var(--border-line);">
+          <button type="button" class="btn btn-normal-soft" data-action="load-sample">重設示範資料</button>
+          <button type="button" class="btn btn-danger-soft" data-action="clear-all">清空所有資料</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================
+       自訂確認對話框（不使用原生 confirm / alert）
+       =================================================================== -->
+  <div id="confirmModal" class="modal-backdrop is-confirm hidden" data-action="backdrop-close-confirm">
+    <div class="modal-sheet is-xs">
+      <h3 id="confirmTitle" class="modal-title">確認操作</h3>
+      <p id="confirmMessage" style="margin: 8px 0 18px; font-size: 12.5px; color: var(--text-muted); line-height: 1.55;"></p>
+      <div class="btn-row">
+        <button type="button" class="btn btn-soft btn-flex" data-action="confirm-cancel">取消</button>
+        <button id="btnConfirmOk" type="button" class="btn btn-danger btn-flex" data-action="confirm-ok">確定</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 浮動 Toast 容器 -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <!-- ===================================================================
+       核心應用程式邏輯（純原生 JS、零外部依賴、事件委派、完整防呆）
+       =================================================================== -->
+  <script>
+    (function () {
+      'use strict';
+
+      /* -----------------------------------------------------------------
+         1. 常數、主題定義、分類設定與安全本機儲存（附記憶體備援）
+         ----------------------------------------------------------------- */
+      const STORAGE_KEY = 'stock_keeper_items_v3';
+      const INIT_KEY = 'stock_keeper_init_v3';
+      const THEME_KEY = 'stock_keeper_theme_v3';
+      const APP_NAME_KEY = 'stock_keeper_app_name_v3';
+      const DEFAULT_APP_NAME = '囤貨小管家';
+      const apiKey = "";
+      const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+
+      const THEMES = [
+        { id: 'milk-tea', name: '奶茶色', bgDot: '#FAF6F1', accentDot: '#9C7A5C', borderDot: '#E7DCCE' },
+        { id: 'lavender', name: '淡紫色', bgDot: '#F7F5FB', accentDot: '#7E6BA8', borderDot: '#E1D8F0' },
+        { id: 'sky-blue', name: '淡藍色', bgDot: '#F3F8FC', accentDot: '#5B7FA3', borderDot: '#D4E4F2' },
+        { id: 'sakura-pink', name: '淡粉色', bgDot: '#FDF5F7', accentDot: '#B87287', borderDot: '#EED7DD' },
+      ];
+
+      // 相容舊版主題鍵名
+      const LEGACY_THEME_MAP = {
+        milktea: 'milk-tea',
+        blue: 'sky-blue',
+        pink: 'sakura-pink',
+      };
+
+      const CATEGORIES = [
+        { id: '化妝品', label: '化妝品' },
+        { id: '保養品', label: '保養品' },
+        { id: '盥洗用品', label: '盥洗用品' },
+        { id: '食品', label: '食品' },
+        { id: '保健品', label: '保健品' },
+        { id: '其他', label: '其他' },
+      ];
+      const VALID_CATEGORIES = new Set(CATEGORIES.map(c => c.id));
+
+      const STATUS_TABS = [
+        { id: 'all', label: '全部' },
+        { id: 'expiring', label: '快到期' },
+        { id: 'expired', label: '已過期' },
+        { id: 'safe', label: '正常' },
+        { id: 'empty', label: '已用完' },
+      ];
+
+      // 安全儲存層：遇到預覽沙盒封鎖 localStorage 時自動改用記憶體
+      const memoryStore = {};
+      const safeStorage = {
+        get(key) {
+          try {
+            return window.localStorage.getItem(key);
+          } catch (err) {
+            return Object.prototype.hasOwnProperty.call(memoryStore, key) ? memoryStore[key] : null;
+          }
+        },
+        set(key, val) {
+          memoryStore[key] = String(val);
+          try {
+            window.localStorage.setItem(key, String(val));
+          } catch (err) {
+            // 沙盒限制時靜默使用記憶體備援
+          }
+        },
+      };
+
+      const state = {
+        items: [],
+        appName: DEFAULT_APP_NAME,
+        isEditingTitle: false,
+        theme: 'milk-tea',
+        themePopoverOpen: false,
+        selectedCategory: '全部',
+        selectedStatus: 'all',
+        searchQuery: '',
+        sortBy: 'expiry_asc',
+        alertBoardExpanded: true,
+        cameraAvailable: true,
+        cameraStream: null,
+        cameraFacingMode: 'environment',
+        formThumbnail: null,
+        pendingConfirmCallback: null,
+      };
+
+      /* -----------------------------------------------------------------
+         2. 通用輔助工具（DOM 查詢、HTML 跳脫、日期與 1/5 效期運算）
+         ----------------------------------------------------------------- */
+      function $(id) {
+        return document.getElementById(id);
+      }
+
+      function escapeHtml(str) {
+        return String(str == null ? '' : str)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      }
+
+      function formatDate(d) {
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${y}-${m}-${day}`;
+      }
+
+      function getTodayStr() {
+        return formatDate(new Date());
+      }
+
+      function parseLocalDate(str) {
+        if (!str || typeof str !== 'string') return null;
+        const m = str.trim().match(/^(\d{4})-(\d{2})-(\d{2})$/);
+        if (!m) return null;
+        return new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+      }
+
+      function normalizeDateStr(raw) {
+        if (!raw || typeof raw !== 'string') return '';
+        const cleaned = raw.trim().replace(/[./]/g, '-');
+        const full = cleaned.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+        if (full) {
+          const y = Number(full[1]);
+          const mo = Number(full[2]);
+          const d = Number(full[3]);
+          if (mo >= 1 && mo <= 12 && d >= 1 && d <= 31) {
+            return `${y}-${String(mo).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+          }
+        }
+        const ym = cleaned.match(/^(\d{4})-(\d{1,2})$/);
+        if (ym) {
+          const y = Number(ym[1]);
+          const mo = Number(ym[2]);
+          if (mo >= 1 && mo <= 12) {
+            return `${y}-${String(mo).padStart(2, '0')}-01`;
+          }
+        }
+        return '';
+      }
+
+      function shiftDays(dateStr, deltaDays) {
+        const d = parseLocalDate(dateStr) || new Date();
+        d.setDate(d.getDate() + deltaDays);
+        return formatDate(d);
+      }
+
+      function addMonths(dateStr, months) {
+        const d = parseLocalDate(dateStr) || new Date();
+        d.setMonth(d.getMonth() + months);
+        return formatDate(d);
+      }
+
+      function daysBetween(startStr, endStr) {
+        const a = parseLocalDate(startStr);
+        const b = parseLocalDate(endStr);
+        if (!a || !b) return 0;
+        return Math.round((b.getTime() - a.getTime()) / 86400000);
+      }
+
+      function evaluateItem(item) {
+        const qty = Number(item.quantity) || 0;
+        const expiryStr = normalizeDateStr(item.expiryDate);
+        if (!expiryStr) {
+          return {
+            hasExpiry: false,
+            status: qty <= 0 ? 'empty' : 'no_expiry',
+            totalDays: 0,
+            remainingDays: Infinity,
+            thresholdDays: 0,
+            ratio: 1,
+          };
+        }
+
+        const todayStr = getTodayStr();
+        const startStr = normalizeDateStr(item.startDate) || shiftDays(expiryStr, -365);
+        const totalDays = Math.max(1, daysBetween(startStr, expiryStr));
+        const remainingDays = daysBetween(todayStr, expiryStr);
+        const thresholdDays = Math.max(1, Math.ceil(totalDays / 5));
+        const ratio = Math.max(0, Math.min(1, remainingDays / totalDays));
+
+        if (qty <= 0) {
+          return { hasExpiry: true, status: 'empty', totalDays, remainingDays, thresholdDays, ratio };
+        }
+        if (remainingDays < 0) {
+          return { hasExpiry: true, status: 'expired', totalDays, remainingDays, thresholdDays, ratio: 0 };
+        }
+        if (remainingDays <= thresholdDays) {
+          return { hasExpiry: true, status: 'expiring', totalDays, remainingDays, thresholdDays, ratio };
+        }
+        return { hasExpiry: true, status: 'safe', totalDays, remainingDays, thresholdDays, ratio };
+      }
+
+      /* -----------------------------------------------------------------
+         3. 零表情符號：手繪線條風格分類 SVG 插圖庫
+         ----------------------------------------------------------------- */
+      function getCategorySvg(category, size) {
+        const s = size || 16;
+        switch (category) {
+          case '全部':
+            return `<svg class="sketch-svg" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <rect x="4" y="4" width="6.8" height="6.8" rx="2" fill="var(--icon-fill)" stroke="currentColor" stroke-width="1.6"/>
+              <rect x="13.2" y="4" width="6.8" height="6.8" rx="2" fill="var(--icon-fill-alt)" stroke="currentColor" stroke-width="1.6"/>
+              <rect x="4" y="13.2" width="6.8" height="6.8" rx="2" fill="var(--icon-fill-alt)" stroke="currentColor" stroke-width="1.6"/>
+              <rect x="13.2" y="13.2" width="6.8" height="6.8" rx="2" fill="var(--icon-fill)" stroke="currentColor" stroke-width="1.6"/>
+            </svg>`;
+          case '化妝品':
+            return `<svg class="sketch-svg" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M9.6 8.8V5.1C9.6 4.3 10.4 3.7 11.2 4C12.8 4.6 14.4 6 14.4 7.5V8.8" fill="var(--icon-fill-alt)" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M8.6 8.8H15.4V13.2H8.6V8.8Z" fill="var(--icon-fill)" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+              <path d="M7.6 13.2H16.4V19.6C16.4 20.3 15.8 20.8 15.1 20.8H8.9C8.2 20.8 7.6 20.3 7.6 19.6V13.2Z" fill="var(--icon-fill-alt)" stroke="currentColor" stroke-width="1.65" stroke-linejoin="round"/>
+              <path d="M10.2 15.8V18.4" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" opacity="0.6"/>
+            </svg>`;
+          case '保養品':
+            return `<svg class="sketch-svg" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M10.4 4.5C10.4 3.6 11.1 3 12 3C12.9 3 13.6 3.6 13.6 4.5V6.6H10.4V4.5Z" fill="var(--icon-fill-alt)" stroke="currentColor" stroke-width="1.55" stroke-linejoin="round"/>
+              <path d="M9.4 6.6H14.6V8.8H9.4V6.6Z" stroke="currentColor" stroke-width="1.55" stroke-linejoin="round"/>
+              <path d="M7.4 12.2C7.4 10.2 8.7 8.8 10.5 8.8H13.5C15.3 8.8 16.6 10.2 16.6 12.2V18.8C16.6 19.9 15.7 20.8 14.6 20.8H9.4C8.3 20.8 7.4 19.9 7.4 18.8V12.2Z" fill="var(--icon-fill)" stroke="currentColor" stroke-width="1.65" stroke-linejoin="round"/>
+              <path d="M12 12.4C12 12.4 10.3 14.4 10.3 15.6C10.3 16.5 11.1 17.3 12 17.3C12.9 17.3 13.7 16.5 13.7 15.6C13.7 14.4 12 12.4 12 12.4Z" fill="var(--icon-fill-alt)" stroke="currentColor" stroke-width="1.35" stroke-linejoin="round"/>
+            </svg>`;
+          case '盥洗用品':
+            return `<svg class="sketch-svg" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M11 6.5V4.4H15.8C16.5 4.4 17 4.9 17 5.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M9.2 6.8H12.8V9H9.2V6.8Z" stroke="currentColor" stroke-width="1.55" stroke-linejoin="round"/>
+              <path d="M6.8 11.4C6.8 10 7.9 9 9.2 9H12.8C14.1 9 15.2 10 15.2 11.4V18.8C15.2 19.9 14.3 20.8 13.2 20.8H8.8C7.7 20.8 6.8 19.9 6.8 18.8V11.4Z" fill="var(--icon-fill)" stroke="currentColor" stroke-width="1.65" stroke-linejoin="round"/>
+              <circle cx="18.2" cy="11.2" r="1.5" fill="var(--icon-fill-alt)" stroke="currentColor" stroke-width="1.3"/>
+              <circle cx="19.3" cy="15.2" r="1" fill="var(--icon-fill-alt)" stroke="currentColor" stroke-width="1.2"/>
+            </svg>`;
+          case '食品':
+            return `<svg class="sketch-svg" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M5.5 10.2H16.2V15.4C16.2 18.1 14 20.2 11.2 20.2H10.5C7.7 20.2 5.5 18.1 5.5 15.4V10.2Z" fill="var(--icon-fill)" stroke="currentColor" stroke-width="1.65" stroke-linejoin="round"/>
+              <path d="M16.2 11.4H17.8C19.1 11.4 20 12.3 20 13.6C20 14.9 19.1 15.8 17.8 15.8H16.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+              <path d="M8.8 7.6C8.8 6.5 9.6 6.2 9.6 5.1M12.6 7.6C12.6 6.5 13.4 6.2 13.4 5.1" stroke="currentColor" stroke-width="1.45" stroke-linecap="round"/>
+            </svg>`;
+          case '保健品':
+            return `<svg class="sketch-svg" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <rect x="8.2" y="4.4" width="7.6" height="2.8" rx="1.2" fill="var(--icon-fill-alt)" stroke="currentColor" stroke-width="1.55"/>
+              <path d="M6.8 10C6.8 8.4 8 7.2 9.6 7.2H14.4C16 7.2 17.2 8.4 17.2 10V18.6C17.2 19.8 16.2 20.8 15 20.8H9C7.8 20.8 6.8 19.8 6.8 18.6V10Z" fill="var(--icon-fill)" stroke="currentColor" stroke-width="1.65" stroke-linejoin="round"/>
+              <path d="M9.6 15.8C9.8 13.4 11.7 11.8 14.3 11.8C14.1 14.4 12.4 16.1 9.6 15.8Z" fill="var(--icon-fill-alt)" stroke="currentColor" stroke-width="1.35" stroke-linejoin="round"/>
+              <path d="M9.4 16.2L12.1 13.8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+            </svg>`;
+          default:
+            return `<svg class="sketch-svg" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <rect x="4.5" y="9.5" width="15" height="10.8" rx="2.2" fill="var(--icon-fill)" stroke="currentColor" stroke-width="1.65"/>
+              <path d="M3.8 9.5H20.2V7.2C20.2 6.5 19.6 6 19 6H5C4.4 6 3.8 6.5 3.8 7.2V9.5Z" fill="var(--icon-fill-alt)" stroke="currentColor" stroke-width="1.55" stroke-linejoin="round"/>
+              <path d="M12 6V20.3" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M12 6C10.8 4.1 8.5 3.8 8.5 5.2C8.5 6 10.3 6 12 6ZM12 6C13.2 4.1 15.5 3.8 15.5 5.2C15.5 6 13.7 6 12 6Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+            </svg>`;
+        }
+      }
+
+      /* -----------------------------------------------------------------
+         4. 自訂應用程式名稱與四色主題切換
+         ----------------------------------------------------------------- */
+      function applyAppName(rawName, persist) {
+        const cleaned = typeof rawName === 'string' ? rawName.trim() : '';
+        const finalName = cleaned || DEFAULT_APP_NAME;
+        state.appName = finalName;
+
+        const titleEl = $('brandTitleText');
+        if (titleEl) titleEl.textContent = finalName;
+
+        const settingsInput = $('settingsAppNameInput');
+        if (settingsInput) settingsInput.value = finalName;
+
+        document.title = `${finalName}｜效期與庫存提醒`;
+
+        if (persist) {
+          safeStorage.set(APP_NAME_KEY, finalName);
+        }
+        return finalName;
+      }
+
+      function loadAppName() {
+        const saved = safeStorage.get(APP_NAME_KEY);
+        applyAppName(saved || DEFAULT_APP_NAME, false);
+      }
+
+      function startInlineTitleEdit() {
+        const trigger = $('brandTitleTrigger');
+        const input = $('brandTitleInput');
+        if (!trigger || !input) return;
+
+        toggleThemePopover(false);
+        state.isEditingTitle = true;
+        input.value = state.appName;
+        trigger.classList.add('hidden');
+        input.classList.remove('hidden');
+        input.focus();
+        input.select();
+      }
+
+      function finishInlineTitleEdit(commit) {
+        if (!state.isEditingTitle) return;
+        state.isEditingTitle = false;
+
+        const trigger = $('brandTitleTrigger');
+        const input = $('brandTitleInput');
+        if (commit && input) {
+          const prevName = state.appName;
+          const nextName = applyAppName(input.value, true);
+          if (nextName !== prevName) {
+            showToast(`已更新名稱為「${nextName}」`, 'success');
+          }
+        }
+        if (input) input.classList.add('hidden');
+        if (trigger) trigger.classList.remove('hidden');
+      }
+
+      function normalizeThemeId(rawId) {
+        if (!rawId) return 'milk-tea';
+        const mapped = LEGACY_THEME_MAP[rawId] || rawId;
+        return THEMES.some(t => t.id === mapped) ? mapped : 'milk-tea';
+      }
+
+      function renderThemeSelectors() {
+        const html = THEMES.map(t => {
+          const active = state.theme === t.id;
+          return `
+            <button type="button" class="theme-option-btn ${active ? 'is-active' : ''}" data-action="choose-theme" data-theme-id="${t.id}">
+              <span class="theme-option-left">
+                <span class="theme-swatch" style="background-color: ${t.bgDot}; border-color: ${t.borderDot};">
+                  <span class="theme-swatch-dot" style="background-color: ${t.accentDot};"></span>
+                </span>
+                <span>${t.name}</span>
+              </span>
+              ${active ? `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" style="color: var(--primary);"><path d="M5 12.5L9.5 17L19 7.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>` : ''}
+            </button>
+          `;
+        }).join('');
+
+        if ($('headerThemeOptions')) $('headerThemeOptions').innerHTML = html;
+        if ($('settingsThemeOptions')) $('settingsThemeOptions').innerHTML = html;
+      }
+
+      function applyTheme(themeId, persist) {
+        const valid = normalizeThemeId(themeId);
+        state.theme = valid;
+        document.documentElement.setAttribute('data-theme', valid);
+        if (persist) safeStorage.set(THEME_KEY, valid);
+        renderThemeSelectors();
+      }
+
+      function loadTheme() {
+        const saved = safeStorage.get(THEME_KEY);
+        applyTheme(saved || 'milk-tea', false);
+      }
+
+      function toggleThemePopover(forceOpen) {
+        const pop = $('themePopover');
+        const btn = $('btnHeaderTheme');
+        if (!pop || !btn) return;
+        const next = typeof forceOpen === 'boolean' ? forceOpen : !state.themePopoverOpen;
+        state.themePopoverOpen = next;
+        pop.classList.toggle('hidden', !next);
+        btn.setAttribute('aria-expanded', next ? 'true' : 'false');
+        if (next) renderThemeSelectors();
+      }
+
+      /* -----------------------------------------------------------------
+         5. 示範資料初始化（首次開啟載入 4 筆，其中 2 筆自然觸發 1/5 提醒）
+         ----------------------------------------------------------------- */
+      function createDemoItems() {
+        const today = getTodayStr();
+        const now = Date.now();
+        return [
+          {
+            id: `demo-${now}-1`,
+            name: '日本焙茶拿鐵沖泡包（10入）',
+            category: '食品',
+            quantity: 2,
+            unit: '盒',
+            startDate: shiftDays(today, -160),
+            expiryDate: shiftDays(today, 20), // 總效期 180 天，1/5 門檻 36 天 -> 剩 20 天（快到期）
+            note: '廚房零食櫃上層，記得先喝完',
+            thumbnail: null,
+            createdAt: now - 3000,
+          },
+          {
+            id: `demo-${now}-2`,
+            name: '玻尿酸保濕精華液 30ml',
+            category: '保養品',
+            quantity: 1,
+            unit: '瓶',
+            startDate: shiftDays(today, -320),
+            expiryDate: shiftDays(today, 45), // 總效期 365 天，1/5 門檻 73 天 -> 剩 45 天（快到期）
+            note: '化妝台第二層，已開封使用中',
+            thumbnail: null,
+            createdAt: now - 2000,
+          },
+          {
+            id: `demo-${now}-3`,
+            name: '絲絨霧面唇釉 #04 烏龍奶茶',
+            category: '化妝品',
+            quantity: 1,
+            unit: '支',
+            startDate: shiftDays(today, -120),
+            expiryDate: shiftDays(today, 610), // 總效期 730 天 -> 正常
+            note: '外出化妝包內',
+            thumbnail: null,
+            createdAt: now - 1000,
+          },
+          {
+            id: `demo-${now}-4`,
+            name: '胺基酸溫和洗面乳 120g',
+            category: '盥洗用品',
+            quantity: 3,
+            unit: '瓶',
+            startDate: shiftDays(today, -40),
+            expiryDate: shiftDays(today, 690), // 總效期 730 天 -> 正常
+            note: '浴室下方儲物櫃囤貨，暫時不用再買',
+            thumbnail: null,
+            createdAt: now,
+          },
+        ];
+      }
+
+      function saveItems() {
+        safeStorage.set(STORAGE_KEY, JSON.stringify(state.items));
+      }
+
+      function loadItems() {
+        const raw = safeStorage.get(STORAGE_KEY);
+        const initialized = safeStorage.get(INIT_KEY);
+        if (raw) {
+          try {
+            const parsed = JSON.parse(raw);
+            if (Array.isArray(parsed)) {
+              state.items = parsed;
+              return;
+            }
+          } catch (err) {
+            // 損毀時重建
+          }
+        }
+        if (!initialized) {
+          state.items = createDemoItems();
+          safeStorage.set(INIT_KEY, '1');
+          saveItems();
+        } else {
+          state.items = [];
+        }
+      }
+
+      /* -----------------------------------------------------------------
+         6. 畫面渲染函式群
+         ----------------------------------------------------------------- */
+      function renderAll() {
+        renderQuickCheckBanner();
+        renderAlertBoard();
+        renderStats();
+        renderCategoryTabs();
+        renderStatusTabs();
+        renderItemList();
+      }
+
+      function renderQuickCheckBanner() {
+        const banner = $('quickCheckBanner');
+        const clearBtn = $('btnClearSearch');
+        const q = state.searchQuery.trim();
+        if (clearBtn) clearBtn.classList.toggle('hidden', !q);
+        if (!banner) return;
+
+        if (!q) {
+          banner.classList.add('hidden');
+          return;
+        }
+
+        const kw = q.toLowerCase();
+        const matches = state.items.filter(it =>
+          (it.name || '').toLowerCase().includes(kw) ||
+          (it.note || '').toLowerCase().includes(kw) ||
+          (it.category || '').toLowerCase().includes(kw)
+        );
+        const inStock = matches.filter(it => (Number(it.quantity) || 0) > 0);
+        const totalQty = inStock.reduce((sum, it) => sum + (Number(it.quantity) || 0), 0);
+
+        banner.classList.remove('hidden');
+        if (totalQty > 0) {
+          const dated = inStock
+            .filter(it => normalizeDateStr(it.expiryDate))
+            .sort((a, b) => a.expiryDate.localeCompare(b.expiryDate));
+          const nearest = dated.length ? `，最近到期日為 ${dated[0].expiryDate}` : '';
+          banner.className = 'quick-check-banner is-has-stock';
+          banner.innerHTML = `家裡目前已有 <strong>${inStock.length}</strong> 項相關品項，共 <strong>${totalQty}</strong> 件庫存${escapeHtml(nearest)}，採買前請確認是否需要補貨。`;
+        } else {
+          banner.className = 'quick-check-banner is-no-stock';
+          banner.innerHTML = `目前家裡沒有「<strong>${escapeHtml(q)}</strong>」的庫存，可以放心購買。`;
+        }
+      }
+
+      function renderAlertBoard() {
+        const section = $('alertBoardSection');
+        const head = $('alertBoardHead');
+        const body = $('alertBoardBody');
+        const badge = $('alertCountBadge');
+        const chevron = $('alertChevron');
+        const chipsWrap = $('alertChipsContainer');
+        if (!section || !chipsWrap) return;
+
+        const alerts = state.items
+          .map(item => ({ item, info: evaluateItem(item) }))
+          .filter(x => x.info.status === 'expired' || x.info.status === 'expiring')
+          .sort((a, b) => a.info.remainingDays - b.info.remainingDays);
+
+        if (alerts.length === 0) {
+          section.classList.add('hidden');
+          return;
+        }
+
+        section.classList.remove('hidden');
+        if (badge) badge.textContent = `${alerts.length} 項`;
+        if (body) body.classList.toggle('hidden', !state.alertBoardExpanded);
+        if (head) head.classList.toggle('is-collapsed', !state.alertBoardExpanded);
+        if (chevron) chevron.classList.toggle('is-open', state.alertBoardExpanded);
+
+        chipsWrap.innerHTML = alerts.map(({ item, info }) => {
+          const isExpired = info.status === 'expired';
+          const dayLabel = isExpired
+            ? `過期 ${Math.abs(info.remainingDays)} 天`
+            : (info.remainingDays === 0 ? '今天到期' : `剩 ${info.remainingDays} 天`);
+          return `
+            <button type="button" class="alert-chip ${isExpired ? 'is-expired' : ''}" data-action="locate-item" data-id="${escapeHtml(item.id)}">
+              <span class="alert-chip-left">
+                ${getCategorySvg(item.category, 15)}
+                <span class="alert-chip-name">${escapeHtml(item.name)}</span>
+              </span>
+              <span class="alert-chip-day">${dayLabel}</span>
+            </button>
+          `;
+        }).join('');
+      }
+
+      function renderStats() {
+        let totalQty = 0;
+        let expiring = 0;
+        let expired = 0;
+
+        state.items.forEach(item => {
+          totalQty += Math.max(0, Number(item.quantity) || 0);
+          const info = evaluateItem(item);
+          if (info.status === 'expiring') expiring += 1;
+          if (info.status === 'expired') expired += 1;
+        });
+
+        if ($('statTotalQty')) $('statTotalQty').textContent = String(totalQty);
+        if ($('statExpiring')) $('statExpiring').textContent = String(expiring);
+        if ($('statExpired')) $('statExpired').textContent = String(expired);
+        if ($('statTotalItems')) $('statTotalItems').textContent = String(state.items.length);
+      }
+
+      function renderCategoryTabs() {
+        const container = $('categoryTabs');
+        if (!container) return;
+
+        const counts = { '全部': state.items.length };
+        CATEGORIES.forEach(c => { counts[c.id] = 0; });
+        state.items.forEach(it => {
+          const cat = VALID_CATEGORIES.has(it.category) ? it.category : '其他';
+          counts[cat] = (counts[cat] || 0) + 1;
+        });
+
+        const allTabs = [{ id: '全部', label: '全部' }, ...CATEGORIES];
+        container.innerHTML = allTabs.map(tab => {
+          const active = state.selectedCategory === tab.id;
+          return `
+            <button type="button" class="cat-pill ${active ? 'is-active' : ''}" data-action="select-category" data-category="${escapeHtml(tab.id)}">
+              ${getCategorySvg(tab.id, 15)}
+              <span>${escapeHtml(tab.label)}</span>
+              <span class="cat-count">${counts[tab.id] || 0}</span>
+            </button>
+          `;
+        }).join('');
+      }
+
+      function renderStatusTabs() {
+        const container = $('statusTabs');
+        if (!container) return;
+        container.innerHTML = STATUS_TABS.map(tab => {
+          const active = state.selectedStatus === tab.id;
+          return `
+            <button type="button" class="status-tab ${active ? 'is-active' : ''}" data-action="select-status" data-status="${tab.id}">
+              ${tab.label}
+            </button>
+          `;
+        }).join('');
+      }
+
+      function renderItemList() {
+        const container = $('itemsContainer');
+        const emptyEl = $('emptyState');
+        if (!container || !emptyEl) return;
+
+        const kw = state.searchQuery.trim().toLowerCase();
+
+        const filtered = state.items
+          .map(item => ({ item, info: evaluateItem(item) }))
+          .filter(({ item, info }) => {
+            if (state.selectedCategory !== '全部' && item.category !== state.selectedCategory) return false;
+            if (state.selectedStatus !== 'all' && info.status !== state.selectedStatus) return false;
+            if (kw) {
+              const hit = (item.name || '').toLowerCase().includes(kw) ||
+                (item.note || '').toLowerCase().includes(kw) ||
+                (item.category || '').toLowerCase().includes(kw);
+              if (!hit) return false;
+            }
+            return true;
+          });
+
+        filtered.sort((a, b) => {
+          if (state.sortBy === 'expiry_asc') {
+            return a.info.remainingDays - b.info.remainingDays;
+          }
+          if (state.sortBy === 'ratio_asc') {
+            return a.info.ratio - b.info.ratio;
+          }
+          if (state.sortBy === 'qty_asc') {
+            return (Number(a.item.quantity) || 0) - (Number(b.item.quantity) || 0);
+          }
+          return (Number(b.item.createdAt) || 0) - (Number(a.item.createdAt) || 0);
+        });
+
+        if (filtered.length === 0) {
+          container.innerHTML = '';
+          emptyEl.classList.remove('hidden');
+          return;
+        }
+
+        emptyEl.classList.add('hidden');
+        container.innerHTML = filtered.map(({ item, info }) => buildItemCardHtml(item, info)).join('');
+      }
+
+      function buildItemCardHtml(item, info) {
+        const qty = Math.max(0, Number(item.quantity) || 0);
+        const unitLabel = item.unit || '個';
+        const isEmpty = qty <= 0;
+
+        let cardClass = '';
+        let badgeHtml = '';
+        let fillClass = 'is-safe';
+
+        if (isEmpty) {
+          cardClass = 'is-empty';
+          badgeHtml = '<span class="badge-status is-muted">已用完</span>';
+          fillClass = 'is-empty';
+        } else if (info.status === 'expired') {
+          cardClass = 'is-expired';
+          badgeHtml = `<span class="badge-status is-expired">已過期 ${Math.abs(info.remainingDays)} 天</span>`;
+          fillClass = 'is-expired';
+        } else if (info.status === 'expiring') {
+          cardClass = 'is-expiring';
+          const dText = info.remainingDays === 0 ? '今天到期' : `剩 ${info.remainingDays} 天`;
+          badgeHtml = `<span class="badge-status is-expiring">快到期・${dText}</span>`;
+          fillClass = 'is-expiring';
+        } else if (info.status === 'safe') {
+          badgeHtml = `<span class="badge-status is-safe">正常・剩 ${info.remainingDays} 天</span>`;
+          fillClass = 'is-safe';
+        } else {
+          badgeHtml = '<span class="badge-status is-muted">未設效期</span>';
+        }
+
+        const thumbHtml = item.thumbnail
+          ? `<div class="item-thumb"><img src="${escapeHtml(item.thumbnail)}" alt="${escapeHtml(item.name)}"></div>`
+          : `<div class="item-thumb">${getCategorySvg(item.category, 24)}</div>`;
+
+        let progressHtml = '';
+        if (info.hasExpiry) {
+          const pct = Math.max(info.status === 'expired' ? 0 : 3, Math.min(100, Math.round(info.ratio * 100)));
+          progressHtml = `
+            <div class="progress-section">
+              <div class="progress-meta">
+                <span>有效期限：${escapeHtml(item.expiryDate)}</span>
+                <span>1/5 提醒門檻：剩 ${info.thresholdDays} 天</span>
+              </div>
+              <div class="progress-track">
+                <div class="progress-fill ${fillClass}" style="width: ${pct}%;"></div>
+                <div class="threshold-mark" title="剩餘 1/5 警戒線"></div>
+              </div>
+              <div class="progress-labels">
+                <span>到期</span>
+                <span class="progress-label-threshold">1/5 警戒線</span>
+                <span>全新 (${info.totalDays}天)</span>
+              </div>
+            </div>
+          `;
+        } else {
+          progressHtml = `
+            <div class="no-expiry-bar">
+              <span>未設定有效期限</span>
+              <button type="button" class="link-btn" data-action="edit-item" data-id="${escapeHtml(item.id)}">補填或補拍效期</button>
+            </div>
+          `;
+        }
+
+        return `
+          <article id="card-${escapeHtml(item.id)}" class="item-card ${cardClass}">
+            <div class="item-card-top">
+              <div class="item-main-click" data-action="edit-item" data-id="${escapeHtml(item.id)}">
+                ${thumbHtml}
+                <div class="item-info">
+                  <div class="item-badges">
+                    <span class="badge-cat">
+                      ${getCategorySvg(item.category, 13)}
+                      <span>${escapeHtml(item.category)}</span>
+                    </span>
+                    ${badgeHtml}
+                  </div>
+                  <h3 class="item-name">${escapeHtml(item.name)}</h3>
+                  ${item.note ? `<p class="item-note">${escapeHtml(item.note)}</p>` : ''}
+                </div>
+              </div>
+
+              <div class="item-controls">
+                <div class="stepper">
+                  <button type="button" class="stepper-btn ${qty <= 0 ? 'is-disabled' : ''}" data-action="stock-minus" data-id="${escapeHtml(item.id)}" aria-label="減少庫存">−</button>
+                  <div class="stepper-val">
+                    <span class="stepper-num">${qty}</span>
+                    <span class="stepper-unit">${escapeHtml(unitLabel)}</span>
+                  </div>
+                  <button type="button" class="stepper-btn is-plus" data-action="stock-plus" data-id="${escapeHtml(item.id)}" aria-label="增加庫存">+</button>
+                </div>
+
+                <div class="item-text-actions">
+                  <button type="button" class="text-action-btn" data-action="edit-item" data-id="${escapeHtml(item.id)}">編輯</button>
+                  <button type="button" class="text-action-btn is-delete" data-action="delete-item" data-id="${escapeHtml(item.id)}">刪除</button>
+                </div>
+              </div>
+            </div>
+            ${progressHtml}
+          </article>
+        `;
+      }
+
+      /* -----------------------------------------------------------------
+         7. 新增 / 編輯表單與 1/5 即時試算
+         ----------------------------------------------------------------- */
+      function renderCategorySelector(selectedCat) {
+        const container = $('categorySelector');
+        const hiddenInput = $('itemCategory');
+        if (hiddenInput) hiddenInput.value = selectedCat;
+        if (!container) return;
+
+        container.innerHTML = CATEGORIES.map(cat => {
+          const active = cat.id === selectedCat;
+          return `
+            <button type="button" class="cat-choice-btn ${active ? 'is-active' : ''}" data-action="pick-form-category" data-category="${escapeHtml(cat.id)}">
+              ${getCategorySvg(cat.id, 15)}
+              <span>${escapeHtml(cat.label)}</span>
+            </button>
+          `;
+        }).join('');
+      }
+
+      function updateFormExpiryPreview() {
+        const startEl = $('itemStartDate');
+        const expiryEl = $('itemExpiryDate');
+        const preview = $('formExpiryPreview');
+        if (!preview) return;
+
+        const startVal = (startEl && startEl.value) || getTodayStr();
+        const expiryVal = expiryEl ? expiryEl.value : '';
+
+        if (!expiryVal) {
+          preview.className = 'status-banner';
+          preview.textContent = '尚未設定有效期限，之後隨時可補拍或補填。';
+          return;
+        }
+
+        const totalDays = Math.max(1, daysBetween(startVal, expiryVal));
+        const thresholdDays = Math.max(1, Math.ceil(totalDays / 5));
+        const remainingDays = daysBetween(getTodayStr(), expiryVal);
+
+        if (remainingDays < 0) {
+          preview.className = 'status-banner is-expired';
+          preview.innerHTML = `總效期 <strong>${totalDays} 天</strong>（1/5 門檻 ${thresholdDays} 天），此日期已過期 <strong>${Math.abs(remainingDays)} 天</strong>。`;
+        } else if (remainingDays <= thresholdDays) {
+          preview.className = 'status-banner is-warn';
+          preview.innerHTML = `總效期 <strong>${totalDays} 天</strong>，將於剩餘 <strong>${thresholdDays} 天</strong>時提醒。目前剩餘 ${remainingDays} 天，將立即顯示於效期提醒看板。`;
+        } else {
+          preview.className = 'status-banner is-safe';
+          preview.innerHTML = `總效期 <strong>${totalDays} 天</strong>，將於剩餘 <strong>${thresholdDays} 天</strong>時提醒（目前尚餘 ${remainingDays} 天）。`;
+        }
+      }
+
+      function openItemModal(editId) {
+        toggleThemePopover(false);
+        const modal = $('itemModal');
+        if (!modal) return;
+
+        if ($('scanOverlay')) $('scanOverlay').classList.add('hidden');
+        if ($('scanStatusBanner')) $('scanStatusBanner').classList.add('hidden');
+        if ($('albumFileInput')) $('albumFileInput').value = '';
+        syncCameraButtonsVisibility();
+
+        const deleteBtn = $('btnDeleteInModal');
+
+        if (editId) {
+          const item = state.items.find(x => x.id === editId);
+          if (!item) return;
+          if ($('itemModalTitle')) $('itemModalTitle').textContent = '編輯物品資訊';
+          $('itemId').value = item.id;
+          $('itemName').value = item.name || '';
+          renderCategorySelector(VALID_CATEGORIES.has(item.category) ? item.category : '其他');
+          $('itemQty').value = Number(item.quantity) || 0;
+          $('itemUnit').value = item.unit || '個';
+          $('itemStartDate').value = item.startDate || getTodayStr();
+          $('itemExpiryDate').value = item.expiryDate || '';
+          $('itemNote').value = item.note || '';
+          state.formThumbnail = item.thumbnail || null;
+          if (state.formThumbnail) {
+            $('photoPreviewImg').src = state.formThumbnail;
+            $('photoPreviewBox').classList.remove('hidden');
+          } else {
+            $('photoPreviewBox').classList.add('hidden');
+          }
+          if (deleteBtn) deleteBtn.classList.remove('hidden');
+        } else {
+          if ($('itemModalTitle')) $('itemModalTitle').textContent = '新增囤貨物品';
+          $('itemId').value = '';
+          $('itemName').value = '';
+          renderCategorySelector('保養品');
+          $('itemQty').value = 1;
+          $('itemUnit').value = '個';
+          $('itemStartDate').value = getTodayStr();
+          $('itemExpiryDate').value = '';
+          $('itemNote').value = '';
+          state.formThumbnail = null;
+          $('photoPreviewBox').classList.add('hidden');
+          if (deleteBtn) deleteBtn.classList.add('hidden');
+        }
+
+        updateFormExpiryPreview();
+        modal.classList.remove('hidden');
+      }
+
+      function closeItemModal() {
+        stopCameraStream();
+        if ($('cameraModal')) $('cameraModal').classList.add('hidden');
+        if ($('itemModal')) $('itemModal').classList.add('hidden');
+      }
+
+      function handleItemFormSubmit(e) {
+        e.preventDefault();
+        const id = $('itemId').value;
+        const name = $('itemName').value.trim();
+        const category = $('itemCategory').value || '其他';
+        const quantity = Math.max(0, parseInt($('itemQty').value, 10) || 0);
+        const unit = $('itemUnit').value.trim() || '個';
+        const startDate = $('itemStartDate').value || getTodayStr();
+        const expiryDate = normalizeDateStr($('itemExpiryDate').value);
+        const note = $('itemNote').value.trim();
+
+        if (!name) {
+          showToast('請輸入物品名稱', 'error');
+          return;
+        }
+
+        const now = Date.now();
+        if (id) {
+          const idx = state.items.findIndex(x => x.id === id);
+          if (idx !== -1) {
+            state.items[idx] = {
+              ...state.items[idx],
+              name,
+              category,
+              quantity,
+              unit,
+              startDate,
+              expiryDate,
+              note,
+              thumbnail: state.formThumbnail || null,
+            };
+          }
+          showToast('已更新物品資訊', 'success');
+        } else {
+          state.items.unshift({
+            id: `item-${now}-${Math.random().toString(36).slice(2, 6)}`,
+            name,
+            category,
+            quantity,
+            unit,
+            startDate,
+            expiryDate,
+            note,
+            thumbnail: state.formThumbnail || null,
+            createdAt: now,
+          });
+          showToast(`已新增「${name}」`, 'success');
+        }
+
+        saveItems();
+        renderAll();
+        closeItemModal();
+      }
+
+      /* -----------------------------------------------------------------
+         8. 即時相機觀景窗（getUserMedia）與嚴格自動隱藏機制
+         ----------------------------------------------------------------- */
+      function checkCameraSupport() {
+        try {
+          state.cameraAvailable = Boolean(
+            navigator.mediaDevices && typeof navigator.mediaDevices.getUserMedia === 'function'
+          );
+        } catch (err) {
+          state.cameraAvailable = false;
+        }
+        syncCameraButtonsVisibility();
+      }
+
+      function syncCameraButtonsVisibility() {
+        const fabCam = $('btnFabCamera');
+        const modalCam = $('btnModalCamera');
+        if (fabCam) fabCam.classList.toggle('hidden', !state.cameraAvailable);
+        if (modalCam) modalCam.classList.toggle('hidden', !state.cameraAvailable);
+      }
+
+      function stopCameraStream() {
+        try {
+          if (state.cameraStream) {
+            state.cameraStream.getTracks().forEach(track => track.stop());
+            state.cameraStream = null;
+          }
+          const video = $('liveCameraVideo');
+          if (video) video.srcObject = null;
+        } catch (err) {
+          // 忽略串流釋放錯誤
+        }
+      }
+
+      function handleCameraUnavailable() {
+        stopCameraStream();
+        if ($('cameraModal')) $('cameraModal').classList.add('hidden');
+        state.cameraAvailable = false;
+        syncCameraButtonsVisibility();
+        showToast('目前環境無法直接開啟相機，請改用「相簿選取」上傳照片', 'info');
+      }
+
+      async function openLiveCamera(facingMode) {
+        const targetFacing = facingMode || state.cameraFacingMode || 'environment';
+        try {
+          if (!navigator.mediaDevices || typeof navigator.mediaDevices.getUserMedia !== 'function') {
+            handleCameraUnavailable();
+            return;
+          }
+          stopCameraStream();
+          const stream = await navigator.mediaDevices.getUserMedia({
+            video: {
+              facingMode: { ideal: targetFacing },
+              width: { ideal: 1920 },
+              height: { ideal: 1080 },
+            },
+            audio: false,
+          });
+          state.cameraStream = stream;
+          state.cameraFacingMode = targetFacing;
+
+          const video = $('liveCameraVideo');
+          if (video) {
+            video.srcObject = stream;
+            await video.play();
+          }
+          if ($('cameraModal')) $('cameraModal').classList.remove('hidden');
+        } catch (err) {
+          handleCameraUnavailable();
+        }
+      }
+
+      function closeLiveCamera() {
+        stopCameraStream();
+        if ($('cameraModal')) $('cameraModal').classList.add('hidden');
+      }
+
+      function makeThumbnailFromCanvas(sourceCanvas, maxDim) {
+        let w = sourceCanvas.width;
+        let h = sourceCanvas.height;
+        if (w > maxDim || h > maxDim) {
+          if (w > h) {
+            h = Math.round((h * maxDim) / w);
+            w = maxDim;
+          } else {
+            w = Math.round((w * maxDim) / h);
+            h = maxDim;
+          }
+        }
+        const c = document.createElement('canvas');
+        c.width = w;
+        c.height = h;
+        c.getContext('2d').drawImage(sourceCanvas, 0, 0, w, h);
+        return c.toDataURL('image/jpeg', 0.72);
+      }
+
+      async function captureCameraFrame() {
+        const video = $('liveCameraVideo');
+        if (!video || !video.videoWidth || !video.videoHeight) {
+          showToast('相機畫面尚未就緒，請稍候再拍', 'info');
+          return;
+        }
+
+        const maxDim = 1280;
+        let w = video.videoWidth;
+        let h = video.videoHeight;
+        if (w > maxDim || h > maxDim) {
+          if (w > h) {
+            h = Math.round((h * maxDim) / w);
+            w = maxDim;
+          } else {
+            w = Math.round((w * maxDim) / h);
+            h = maxDim;
+          }
+        }
+
+        const canvas = document.createElement('canvas');
+        canvas.width = w;
+        canvas.height = h;
+        canvas.getContext('2d').drawImage(video, 0, 0, w, h);
+
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.86);
+        const base64Data = dataUrl.split(',')[1];
+        const thumbnailDataUrl = makeThumbnailFromCanvas(canvas, 200);
+
+        closeLiveCamera();
+        if ($('itemModal') && $('itemModal').classList.contains('hidden')) {
+          openItemModal(null);
+        }
+        await runGeminiVision({ dataUrl, base64Data, mimeType: 'image/jpeg', thumbnailDataUrl });
+      }
+
+      function compressFileToJpeg(file) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = ev => {
+            const img = new Image();
+            img.onload = () => {
+              const maxDim = 1024;
+              let w = img.width;
+              let h = img.height;
+              if (w > maxDim || h > maxDim) {
+                if (w > h) {
+                  h = Math.round((h * maxDim) / w);
+                  w = maxDim;
+                } else {
+                  w = Math.round((w * maxDim) / h);
+                  h = maxDim;
+                }
+              }
+              const canvas = document.createElement('canvas');
+              canvas.width = w;
+              canvas.height = h;
+              canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+              const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+              resolve({
+                dataUrl,
+                base64Data: dataUrl.split(',')[1],
+                mimeType: 'image/jpeg',
+                thumbnailDataUrl: makeThumbnailFromCanvas(canvas, 200),
+              });
+            };
+            img.onerror = () => reject(new Error('圖片載入失敗'));
+            img.src = ev.target.result;
+          };
+          reader.onerror = () => reject(new Error('檔案讀取失敗'));
+          reader.readAsDataURL(file);
+        });
+      }
+
+      /* -----------------------------------------------------------------
+         9. Gemini Vision API 辨識（指數退避 + 嚴格效期規則）
+         ----------------------------------------------------------------- */
+      async function fetchWithBackoff(url, options, maxRetries) {
+        const retries = maxRetries || 3;
+        let delay = 1000;
+        for (let attempt = 0; attempt <= retries; attempt++) {
+          try {
+            const res = await fetch(url, options);
+            if (res.ok) return res;
+            if ((res.status === 429 || res.status >= 500) && attempt < retries) {
+              await new Promise(r => setTimeout(r, delay));
+              delay *= 2;
+              continue;
+            }
+            throw new Error(`HTTP ${res.status}`);
+          } catch (err) {
+            if (attempt < retries) {
+              await new Promise(r => setTimeout(r, delay));
+              delay *= 2;
+              continue;
+            }
+            throw err;
+          }
+        }
+      }
+
+      async function runGeminiVision({ dataUrl, base64Data, mimeType, thumbnailDataUrl }) {
+        const previewBox = $('photoPreviewBox');
+        const previewImg = $('photoPreviewImg');
+        const scanOverlay = $('scanOverlay');
+        const statusBanner = $('scanStatusBanner');
+
+        if (previewImg) previewImg.src = dataUrl;
+        state.formThumbnail = thumbnailDataUrl || null;
+        if (previewBox) previewBox.classList.remove('hidden');
+        if (scanOverlay) scanOverlay.classList.remove('hidden');
+        if (statusBanner) statusBanner.classList.add('hidden');
+
+        try {
+          const prompt = `你是一位細心的繁體中文商品與有效期限辨識助手。請觀察這張照片並回傳 JSON：
+1. name：商品名稱（繁體中文、簡潔明確）。若畫面只有瓶底效期特寫看不出商品，請回傳空字串 ""。
+2. category：必須為「化妝品」、「保養品」、「盥洗用品」、「食品」、「保健品」、「其他」其中之一。
+3. hasExpiryDate：布林值。只有照片中真的清楚拍到有效期限（如 EXP、BEST BEFORE、賞味期限、有效日期、BB 等）才為 true；否則必須為 false。
+4. expiryDate：格式 YYYY-MM-DD 或空字串 ""。嚴格規定：只有 hasExpiryDate 為 true 時才填入日期（若只標示年月如 2027.08 請轉為 2027-08-01）；沒拍到或模糊無法確認時必須回傳 ""，絕對不可猜測！
+5. note：簡短補充說明（例如容量或口味，沒有就回傳 ""）。`;
+
+          const payload = {
+            contents: [{
+              role: 'user',
+              parts: [
+                { text: prompt },
+                { inlineData: { mimeType, data: base64Data } },
+              ],
+            }],
+            generationConfig: {
+              responseMimeType: 'application/json',
+              responseSchema: {
+                type: 'OBJECT',
+                properties: {
+                  name: { type: 'STRING' },
+                  category: {
+                    type: 'STRING',
+                    enum: ['化妝品', '保養品', '盥洗用品', '食品', '保健品', '其他'],
+                  },
+                  hasExpiryDate: { type: 'BOOLEAN' },
+                  expiryDate: { type: 'STRING' },
+                  note: { type: 'STRING' },
+                },
+                required: ['name', 'category', 'hasExpiryDate', 'expiryDate', 'note'],
+              },
+            },
+          };
+
+          const res = await fetchWithBackoff(GEMINI_API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+          }, 3);
+
+          const json = await res.json();
+          const text = json && json.candidates && json.candidates[0] &&
+            json.candidates[0].content && json.candidates[0].content.parts &&
+            json.candidates[0].content.parts[0] && json.candidates[0].content.parts[0].text;
+
+          if (!text) throw new Error('無辨識回傳內容');
+
+          const parsed = JSON.parse(text);
+          const nameInput = $('itemName');
+          const noteInput = $('itemNote');
+          const expiryInput = $('itemExpiryDate');
+
+          if (parsed.name && parsed.name.trim() && nameInput) {
+            nameInput.value = parsed.name.trim();
+          }
+          if (parsed.category && VALID_CATEGORIES.has(parsed.category)) {
+            if ((parsed.name && parsed.name.trim()) || !(nameInput && nameInput.value.trim())) {
+              renderCategorySelector(parsed.category);
+            }
+          }
+          if (parsed.note && parsed.note.trim() && noteInput && !noteInput.value.trim()) {
+            noteInput.value = parsed.note.trim();
+          }
+
+          const validExpiry = parsed.hasExpiryDate ? normalizeDateStr(parsed.expiryDate) : '';
+          if (expiryInput) expiryInput.value = validExpiry || '';
+
+          updateFormExpiryPreview();
+
+          if (statusBanner) {
+            statusBanner.classList.remove('hidden');
+            if (validExpiry) {
+              statusBanner.className = 'status-banner is-safe';
+              statusBanner.innerHTML = `已辨識完成並帶入有效期限 <strong>${escapeHtml(validExpiry)}</strong>，請確認資訊後儲存。`;
+            } else {
+              statusBanner.className = 'status-banner is-warn';
+              statusBanner.textContent = '照片中未清楚拍到有效期限，已將期限欄留空；您可以靠近效期處重拍，或直接手動輸入。';
+            }
+          }
+        } catch (err) {
+          if (statusBanner) {
+            statusBanner.classList.remove('hidden');
+            statusBanner.className = 'status-banner is-expired';
+            statusBanner.textContent = 'AI 辨識暫時無法完成，請重新選圖或直接手動輸入物品資訊。';
+          }
+        } finally {
+          if (scanOverlay) scanOverlay.classList.add('hidden');
+        }
+      }
+
+      /* -----------------------------------------------------------------
+         10. 通知測試、設定備份、自訂確認對話框與 Toast
+         ----------------------------------------------------------------- */
+      function triggerNotificationTest() {
+        try {
+          const alerts = state.items
+            .map(item => ({ item, info: evaluateItem(item) }))
+            .filter(x => x.info.status === 'expired' || x.info.status === 'expiring');
+
+          const bodyText = alerts.length > 0
+            ? `有 ${alerts.length} 項囤貨快到期或已過期：${alerts.slice(0, 3).map(x => x.item.name).join('、')}${alerts.length > 3 ? '等' : ''}。`
+            : '目前所有有庫存的物品都在安全效期內。';
+
+          if (typeof Notification === 'undefined') {
+            showToast(`效期提醒：${bodyText}`, 'info');
+            return;
+          }
+
+          if (Notification.permission === 'granted') {
+            new Notification(`${state.appName}｜效期提醒`, { body: bodyText });
+            showToast('已發送瀏覽器效期通知', 'success');
+          } else if (Notification.permission !== 'denied') {
+            Notification.requestPermission().then(perm => {
+              if (perm === 'granted') {
+                try {
+                  new Notification(`${state.appName}｜效期提醒`, { body: bodyText });
+                  showToast('已開啟並發送瀏覽器通知', 'success');
+                } catch (e) {
+                  showToast(`效期提醒：${bodyText}`, 'info');
+                }
+              } else {
+                showToast('未開啟瀏覽器通知，仍可於頂部提醒看板檢視', 'info');
+              }
+            }).catch(() => {
+              showToast(`效期提醒：${bodyText}`, 'info');
+            });
+          } else {
+            showToast('瀏覽器通知已被封鎖，請查看頂部效期提醒看板', 'info');
+          }
+        } catch (err) {
+          showToast('目前環境不支援瀏覽器通知，請直接查看頂部提醒看板', 'info');
+        }
+      }
+
+      function openSettingsModal() {
+        toggleThemePopover(false);
+        renderThemeSelectors();
+        if ($('settingsAppNameInput')) $('settingsAppNameInput').value = state.appName;
+        if ($('settingsModal')) $('settingsModal').classList.remove('hidden');
+      }
+
+      function closeSettingsModal() {
+        if ($('settingsModal')) $('settingsModal').classList.add('hidden');
+      }
+
+      function buildBackupPayload() {
+        return {
+          appName: state.appName,
+          theme: state.theme,
+          items: state.items,
+        };
+      }
+
+      function exportJsonFile() {
+        try {
+          const str = JSON.stringify(buildBackupPayload(), null, 2);
+          const blob = new Blob([str], { type: 'application/json' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `stock-keeper-backup-${getTodayStr()}.json`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+          showToast('已下載 JSON 備份檔', 'success');
+        } catch (err) {
+          showToast('下載失敗，請嘗試改用「複製 JSON 內容」', 'error');
+        }
+      }
+
+      function copyJsonToClipboard() {
+        const str = JSON.stringify(buildBackupPayload(), null, 2);
+        const ta = document.createElement('textarea');
+        ta.value = str;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        try {
+          document.execCommand('copy');
+          showToast('已複製 JSON 備份到剪貼簿', 'success');
+        } catch (err) {
+          showToast('複製失敗，請改用下載備份檔', 'error');
+        } finally {
+          document.body.removeChild(ta);
+        }
+      }
+
+      function openConfirm(title, message, okText, okBtnClass, onConfirm) {
+        if ($('confirmTitle')) $('confirmTitle').textContent = title;
+        if ($('confirmMessage')) $('confirmMessage').textContent = message;
+        const okBtn = $('btnConfirmOk');
+        if (okBtn) {
+          okBtn.textContent = okText;
+          okBtn.className = `btn btn-flex ${okBtnClass || 'btn-danger'}`;
+        }
+        state.pendingConfirmCallback = onConfirm;
+        if ($('confirmModal')) $('confirmModal').classList.remove('hidden');
+      }
+
+      function closeConfirm() {
+        if ($('confirmModal')) $('confirmModal').classList.add('hidden');
+        state.pendingConfirmCallback = null;
+      }
+
+      function showToast(message, type) {
+        const container = $('toastContainer');
+        if (!container) return;
+        const el = document.createElement('div');
+        const cls = type === 'success' ? 'is-success' : (type === 'error' ? 'is-error' : '');
+        el.className = `toast-item ${cls}`;
+        el.textContent = message;
+        container.appendChild(el);
+        setTimeout(() => {
+          el.style.opacity = '0';
+          el.style.transition = 'opacity 0.25s ease';
+          setTimeout(() => {
+            if (el.parentNode) el.parentNode.removeChild(el);
+          }, 260);
+        }, 2800);
+      }
+
+      /* -----------------------------------------------------------------
+         11. 集中式事件委派（最先執行綁定，確保每個按鈕必定有效）
+         ----------------------------------------------------------------- */
+      function bindGlobalEvents() {
+        document.addEventListener('click', e => {
+          // 點擊主題選單外部自動收合
+          if (state.themePopoverOpen) {
+            const pop = $('themePopover');
+            const trigger = $('btnHeaderTheme');
+            if (pop && trigger && !pop.contains(e.target) && !trigger.contains(e.target)) {
+              toggleThemePopover(false);
+            }
+          }
+
+          const target = e.target.closest('[data-action]');
+          if (!target) return;
+
+          const action = target.getAttribute('data-action');
+          const id = target.getAttribute('data-id');
+
+          switch (action) {
+            case 'start-edit-title':
+              startInlineTitleEdit();
+              break;
+
+            case 'save-settings-name': {
+              const inp = $('settingsAppNameInput');
+              if (!inp) break;
+              const nextName = applyAppName(inp.value, true);
+              showToast(`已儲存名稱「${nextName}」`, 'success');
+              break;
+            }
+
+            case 'toggle-theme-popover':
+              e.stopPropagation();
+              toggleThemePopover();
+              break;
+
+            case 'choose-theme': {
+              const themeId = target.getAttribute('data-theme-id');
+              const found = THEMES.find(t => t.id === themeId);
+              applyTheme(themeId, true);
+              toggleThemePopover(false);
+              if (found) showToast(`已切換為「${found.name}」主題`, 'info');
+              break;
+            }
+
+            case 'test-notif':
+              triggerNotificationTest();
+              break;
+
+            case 'open-settings':
+              openSettingsModal();
+              break;
+
+            case 'close-settings':
+              closeSettingsModal();
+              break;
+
+            case 'backdrop-close-settings':
+              if (e.target === target) closeSettingsModal();
+              break;
+
+            case 'clear-search':
+              state.searchQuery = '';
+              if ($('searchInput')) $('searchInput').value = '';
+              renderQuickCheckBanner();
+              renderItemList();
+              break;
+
+            case 'toggle-alert-board':
+              state.alertBoardExpanded = !state.alertBoardExpanded;
+              renderAlertBoard();
+              break;
+
+            case 'locate-item':
+              if (!id) break;
+              state.selectedCategory = '全部';
+              state.selectedStatus = 'all';
+              state.searchQuery = '';
+              if ($('searchInput')) $('searchInput').value = '';
+              renderAll();
+              setTimeout(() => {
+                const cardEl = $(`card-${id}`);
+                if (cardEl) {
+                  cardEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                  cardEl.classList.remove('card-highlight');
+                  void cardEl.offsetWidth;
+                  cardEl.classList.add('card-highlight');
+                }
+              }, 30);
+              break;
+
+            case 'quick-status':
+              state.selectedCategory = '全部';
+              state.selectedStatus = target.getAttribute('data-status') || 'all';
+              renderCategoryTabs();
+              renderStatusTabs();
+              renderItemList();
+              break;
+
+            case 'select-category':
+              state.selectedCategory = target.getAttribute('data-category') || '全部';
+              renderCategoryTabs();
+              renderItemList();
+              break;
+
+            case 'select-status':
+              state.selectedStatus = target.getAttribute('data-status') || 'all';
+              renderStatusTabs();
+              renderItemList();
+              break;
+
+            case 'stock-minus':
+            case 'stock-plus': {
+              if (!id) break;
+              const idx = state.items.findIndex(x => x.id === id);
+              if (idx === -1) break;
+              const cur = Math.max(0, Number(state.items[idx].quantity) || 0);
+              const next = Math.max(0, cur + (action === 'stock-plus' ? 1 : -1));
+              if (next === cur) break;
+              state.items[idx].quantity = next;
+              saveItems();
+              renderAll();
+              if (next === 0) showToast(`「${state.items[idx].name}」已標示為已用完`, 'info');
+              break;
+            }
+
+            case 'edit-item':
+              if (id) openItemModal(id);
+              break;
+
+            case 'delete-item': {
+              if (!id) break;
+              const item = state.items.find(x => x.id === id);
+              if (!item) break;
+              openConfirm('刪除物品', `確定要刪除「${item.name}」嗎？刪除後無法復原。`, '確定刪除', 'btn-danger', () => {
+                state.items = state.items.filter(x => x.id !== id);
+                saveItems();
+                renderAll();
+                showToast('已刪除物品', 'info');
+              });
+              break;
+            }
+
+            case 'open-add-modal':
+              openItemModal(null);
+              break;
+
+            case 'fab-camera':
+              openItemModal(null);
+              openLiveCamera();
+              break;
+
+            case 'fab-album':
+              openItemModal(null);
+              if ($('albumFileInput')) $('albumFileInput').click();
+              break;
+
+            case 'close-item-modal':
+              closeItemModal();
+              break;
+
+            case 'backdrop-close-item':
+              if (e.target === target) closeItemModal();
+              break;
+
+            case 'modal-camera':
+              openLiveCamera();
+              break;
+
+            case 'modal-album':
+              if ($('albumFileInput')) $('albumFileInput').click();
+              break;
+
+            case 'remove-photo':
+              state.formThumbnail = null;
+              if ($('photoPreviewImg')) $('photoPreviewImg').src = '';
+              if ($('photoPreviewBox')) $('photoPreviewBox').classList.add('hidden');
+              break;
+
+            case 'pick-form-category':
+              renderCategorySelector(target.getAttribute('data-category') || '其他');
+              break;
+
+            case 'form-qty-minus': {
+              const inp = $('itemQty');
+              if (inp) inp.value = String(Math.max(0, (parseInt(inp.value, 10) || 0) - 1));
+              break;
+            }
+
+            case 'form-qty-plus': {
+              const inp = $('itemQty');
+              if (inp) inp.value = String(Math.min(999, (parseInt(inp.value, 10) || 0) + 1));
+              break;
+            }
+
+            case 'pick-unit':
+              if ($('itemUnit')) $('itemUnit').value = target.getAttribute('data-unit') || '個';
+              break;
+
+            case 'clear-expiry':
+              if ($('itemExpiryDate')) $('itemExpiryDate').value = '';
+              updateFormExpiryPreview();
+              break;
+
+            case 'add-months': {
+              const months = Number(target.getAttribute('data-months')) || 12;
+              const startInput = $('itemStartDate');
+              const base = (startInput && startInput.value) || getTodayStr();
+              if (startInput) startInput.value = base;
+              if ($('itemExpiryDate')) $('itemExpiryDate').value = addMonths(base, months);
+              updateFormExpiryPreview();
+              break;
+            }
+
+            case 'delete-in-modal': {
+              const editId = $('itemId') ? $('itemId').value : '';
+              const item = state.items.find(x => x.id === editId);
+              if (!item) break;
+              closeItemModal();
+              openConfirm('刪除物品', `確定要刪除「${item.name}」嗎？刪除後無法復原。`, '確定刪除', 'btn-danger', () => {
+                state.items = state.items.filter(x => x.id !== editId);
+                saveItems();
+                renderAll();
+                showToast('已刪除物品', 'info');
+              });
+              break;
+            }
+
+            case 'close-camera':
+              closeLiveCamera();
+              break;
+
+            case 'switch-camera':
+              openLiveCamera(state.cameraFacingMode === 'environment' ? 'user' : 'environment');
+              break;
+
+            case 'capture-shutter':
+              captureCameraFrame();
+              break;
+
+            case 'export-json':
+              exportJsonFile();
+              break;
+
+            case 'copy-json':
+              copyJsonToClipboard();
+              break;
+
+            case 'load-sample':
+              openConfirm('重設示範資料', '將載入 4 筆日常示範物品（包含 2 筆快到期示範），方便體驗 1/5 效期提醒與庫存功能。', '確認重設', 'btn-primary', () => {
+                state.items = createDemoItems();
+                saveItems();
+                renderAll();
+                closeSettingsModal();
+                showToast('已重設為 4 筆示範資料', 'success');
+              });
+              break;
+
+            case 'clear-all':
+              openConfirm('清空所有資料', '這會移除清單中的全部物品資料，確定要清空嗎？', '全部清空', 'btn-danger', () => {
+                state.items = [];
+                saveItems();
+                safeStorage.set(INIT_KEY, '1');
+                renderAll();
+                closeSettingsModal();
+                showToast('已清空所有資料', 'info');
+              });
+              break;
+
+            case 'confirm-cancel':
+              closeConfirm();
+              break;
+
+            case 'backdrop-close-confirm':
+              if (e.target === target) closeConfirm();
+              break;
+
+            case 'confirm-ok': {
+              const cb = state.pendingConfirmCallback;
+              closeConfirm();
+              if (typeof cb === 'function') cb();
+              break;
+            }
+
+            default:
+              break;
+          }
+        });
+
+        // 即時買前快搜
+        document.addEventListener('input', e => {
+          if (e.target && e.target.id === 'searchInput') {
+            state.searchQuery = e.target.value;
+            renderQuickCheckBanner();
+            renderItemList();
+          }
+        });
+
+        // 排序、日期、相簿選圖與 JSON 匯入
+        document.addEventListener('change', async e => {
+          const el = e.target;
+          if (!el) return;
+
+          if (el.id === 'sortSelect') {
+            state.sortBy = el.value;
+            renderItemList();
+          } else if (el.id === 'itemStartDate' || el.id === 'itemExpiryDate') {
+            updateFormExpiryPreview();
+          } else if (el.id === 'albumFileInput') {
+            const file = el.files && el.files[0];
+            if (!file) return;
+            try {
+              const payload = await compressFileToJpeg(file);
+              await runGeminiVision(payload);
+            } catch (err) {
+              showToast('圖片讀取失敗，請重新選擇照片', 'error');
+            } finally {
+              el.value = '';
+            }
+          } else if (el.id === 'importJsonInput') {
+            const file = el.files && el.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = ev => {
+              try {
+                const parsed = JSON.parse(ev.target.result);
+                const rawItems = Array.isArray(parsed)
+                  ? parsed
+                  : (parsed && Array.isArray(parsed.items) ? parsed.items : null);
+                if (!rawItems) throw new Error('格式錯誤');
+
+                const cleaned = rawItems
+                  .filter(x => x && typeof x.name === 'string' && x.name.trim())
+                  .map((x, idx) => ({
+                    id: x.id || `imp-${Date.now()}-${idx}`,
+                    name: x.name.trim(),
+                    category: VALID_CATEGORIES.has(x.category) ? x.category : '其他',
+                    quantity: Math.max(0, Number(x.quantity) || 0),
+                    unit: typeof x.unit === 'string' && x.unit.trim() ? x.unit.trim() : '個',
+                    startDate: normalizeDateStr(x.startDate) || getTodayStr(),
+                    expiryDate: normalizeDateStr(x.expiryDate),
+                    note: typeof x.note === 'string' ? x.note : '',
+                    thumbnail: typeof x.thumbnail === 'string' ? x.thumbnail : null,
+                    createdAt: Number(x.createdAt) || Date.now(),
+                  }));
+
+                if (!Array.isArray(parsed)) {
+                  if (typeof parsed.appName === 'string' && parsed.appName.trim()) {
+                    applyAppName(parsed.appName, true);
+                  }
+                  if (typeof parsed.theme === 'string') {
+                    applyTheme(parsed.theme, true);
+                  }
+                }
+
+                state.items = cleaned;
+                saveItems();
+                renderAll();
+                closeSettingsModal();
+                showToast(`成功匯入 ${cleaned.length} 筆物品資料`, 'success');
+              } catch (err) {
+                showToast('匯入失敗，請確認檔案為正確的 JSON 備份格式', 'error');
+              } finally {
+                el.value = '';
+              }
+            };
+            reader.readAsText(file);
+          }
+        });
+
+        // 鍵盤與失焦事件（原地編輯標題）
+        document.addEventListener('keydown', e => {
+          if (!e.target) return;
+          if (e.target.id === 'brandTitleInput') {
+            if (e.key === 'Enter') {
+              e.preventDefault();
+              finishInlineTitleEdit(true);
+            } else if (e.key === 'Escape') {
+              e.preventDefault();
+              finishInlineTitleEdit(false);
+            }
+          } else if (e.target.id === 'settingsAppNameInput' && e.key === 'Enter') {
+            e.preventDefault();
+            const nextName = applyAppName(e.target.value, true);
+            showToast(`已儲存名稱「${nextName}」`, 'success');
+          }
+        });
+
+        document.addEventListener('focusout', e => {
+          if (e.target && e.target.id === 'brandTitleInput') {
+            finishInlineTitleEdit(true);
+          }
+        });
+
+        document.addEventListener('submit', e => {
+          if (e.target && e.target.id === 'itemForm') {
+            handleItemFormSubmit(e);
+          }
+        });
+      }
+
+      /* -----------------------------------------------------------------
+         12. 啟動初始化
+         ----------------------------------------------------------------- */
+      function bootstrap() {
+        try { bindGlobalEvents(); } catch (err) { console.error(err); }
+        try { loadAppName(); } catch (err) { applyAppName(DEFAULT_APP_NAME, false); }
+        try { loadTheme(); } catch (err) { applyTheme('milk-tea', false); }
+        try { checkCameraSupport(); } catch (err) { state.cameraAvailable = false; }
+        try { loadItems(); } catch (err) { state.items = []; }
+        try { renderAll(); } catch (err) { console.error(err); }
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', bootstrap);
+      } else {
+        bootstrap();
+      }
+    })();
+  </script>
+</body>
+</html>
